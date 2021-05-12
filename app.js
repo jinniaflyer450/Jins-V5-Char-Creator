@@ -1,6 +1,15 @@
 const attributes = ['Strength', 'Dexterity', 'Stamina', 'Charisma', 'Manipulation', 'Composure', 'Intelligence', 'Wits', 'Resolve'];
 let attributeVals = [4, 3, 3, 3, 2, 2, 2, 2, 1];
 let statBlock = {};
+let strDom = document.querySelector('#str');
+let dexDom = document.querySelector('#dex');
+let stmDom = document.querySelector('#stm');
+let chaDom = document.querySelector('#cha');
+let mnpDom = document.querySelector('#mnp');
+let cmpDom = document.querySelector('#cmp');
+let intDom = document.querySelector('#int');
+let witDom = document.querySelector('#wit');
+let rsvDom = document.querySelector('#rsv');
 
 function randomizeAttributeVal(){
     const currValIndex = Math.floor(Math.random()*(attributeVals.length));
@@ -35,19 +44,31 @@ function createCharacter(){
     let int = stats['Intelligence'];
     let wit = stats['Wits'];
     let rsv = stats['Resolve'];
-    document.querySelector('#str').innerText = str;
-    document.querySelector('#dex').innerText = dex;
-    document.querySelector('#stm').innerText = stm;
-    document.querySelector('#cha').innerText = cha;
-    document.querySelector('#mnp').innerText = mnp;
-    document.querySelector('#cmp').innerText = cmp;
-    document.querySelector('#int').innerText = int;
-    document.querySelector('#wit').innerText = wit;
-    document.querySelector('#rsv').innerText = rsv;
+    strDom.innerText = str;
+    dexDom.innerText = dex;
+    stmDom.innerText = stm;
+    chaDom.innerText = cha;
+    mnpDom.innerText = mnp;
+    cmpDom.innerText = cmp;
+    intDom.innerText = int;
+    witDom.innerText = wit;
+    rsvDom.innerText = rsv;
     resetGenerator();
 }
 
 document.querySelector('#create-character').addEventListener('click', function(e){
     e.preventDefault();
     createCharacter();
+})
+
+function saveStats(){
+    const savedStats = document.createElement('p');
+    savedStats.innerText = `STR: ${strDom.innerText}, DEX: ${dexDom.innerText}, STM: ${stmDom.innerText}, CHA: ${chaDom.innerText}, MNP: ${mnpDom.innerText}, CMP: ${cmpDom.innerText}, INT: ${intDom.innerText}, WIT: ${witDom.innerText}, RSV: ${rsvDom.innerText}`
+    savedStats.classList.add('saved-stats');
+    document.querySelector('#saved-sheets').append(savedStats);
+}
+
+document.querySelector('#save-character').addEventListener('click', function(e){
+    e.preventDefault();
+    saveStats();
 })
