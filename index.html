@@ -9,10 +9,15 @@
 <body>
     <h1>Character Generator:</h1>
     <h2>Instructions:</h2>
-    <p>Press the "Go!" button to generate basic attribute stats for a VtM V5 PC. To save stats, press the "Save" button.</p>
+    <p>Press the "Go!" button to generate stats for a VtM V5 PC. To save stats, press the "Save" button.</p>
     <h2>The Generator:</h2>
     <button id="create-character">Go!</button>
     <button id="save-character">Save</button>
+    <form>
+        <label for='char-name'>Enter a name or label here:</label>
+        <input type='text' autocomplete='Character' id='char-name'>
+    </form>
+    <h3>Basic Attributes:</h3>
     <table>
         <tbody>
             <tr>
@@ -41,6 +46,84 @@
             </tr>
         </tbody>
     </table>
+    <h3>Skills:</h3>
+    <table>
+        <tbody>
+            <tr>
+                <td>Athletics:</td>
+                <td id="athletics"></td>
+                <td>Animal Ken:</td>
+                <td id="animal-ken"></td>
+                <td>Academics:</td>
+                <td id="academics"></td>
+            </tr>
+            <tr>
+                <td>Brawl:</td>
+                <td id="brawl"></td>
+                <td>Etiquette:</td>
+                <td id="etiquette"></td>
+                <td>Awareness:</td>
+                <td id="awareness"></td>
+            </tr>
+            <tr>
+                <td>Craft:</td>
+                <td id="craft"></td>
+                <td>Insight:</td>
+                <td id="insight"></td>
+                <td>Finance:</td>
+                <td id="finance"></td>
+            </tr>
+            <tr>
+                <td>Drive:</td>
+                <td id="drive"></td>
+                <td>Intimidation:</td>
+                <td id="intimidation"></td>
+                <td>Investigation:</td>
+                <td id="investigation"></td>
+            </tr>
+            <tr>
+                <td>Firearms:</td>
+                <td id="firearms"></td>
+                <td>Leadership:</td>
+                <td id="leadership"></td>
+                <td>Medicine:</td>
+                <td id="medicine"></td>
+            </tr>
+            <tr>
+                <td>Larceny:</td>
+                <td id="larceny"></td>
+                <td>Performance:</td>
+                <td id="performance"></td>
+                <td>Occult:</td>
+                <td id="occult"></td>
+            </tr>
+            <tr>
+                <td>Melee:</td>
+                <td id="melee"></td>
+                <td>Persuasion:</td>
+                <td id="persuasion"></td>
+                <td>Politics:</td>
+                <td id="politics"></td>
+            </tr>
+            <tr>
+                <td>Stealth:</td>
+                <td id="stealth"></td>
+                <td>Streetwise:</td>
+                <td id="streetwise"></td>
+                <td>Science:</td>
+                <td id="science"></td>
+            </tr>
+            <tr>
+                <td>Survival:</td>
+                <td id="survival"></td>
+                <td>Subterfuge:</td>
+                <td id="subterfuge"></td>
+                <td>Technology:</td>
+                <td id="technology"></td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Saved Builds:</h2>
     <div id="saved-sheets"></div>
     <script src="app.js"></script>
 </body>
