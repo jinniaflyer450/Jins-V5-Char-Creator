@@ -82,6 +82,9 @@ let presDom = document.querySelector('#presence');
 let protDom = document.querySelector('#protean');
 let blooDom = document.querySelector('#blood-sorcery');
 
+let randomClan = document.querySelector('#random-clan');
+let randomDist = document.querySelector('#random-dist');
+
 function randomizeAttributeVal(valGroup){
     const currValIndex = Math.floor(Math.random()*(valGroup.length));
     const currVal = valGroup[currValIndex];
@@ -128,8 +131,14 @@ function createCharacter(attributeVals, attributes){
     let clanDom = [...document.getElementsByName('clan')];
     let charClan = null;
     for(clan of clanDom){
-        if(clan.checked === true){
+        if(clan.checked === true && clan.value !== 'random'){
             charClan = clan.value;
+        }
+        else if(clan.checked === true){
+            const clanList = ['banu-haqim', 'brujah', 'gangrel', 'hecata', 'lasombra', 'malkavian', 'ministry', 'nosferatu', 'ravnos', 'salubri', 'toreador', 'tremere', 'tzimisce', 'ventrue'];
+            const currValIndex = Math.floor(Math.random()*(clanList.length))
+            charClan = clanList[currValIndex];
+            randomClan.innerText = charClan;
         }
         else{
             continue;
@@ -154,8 +163,27 @@ function createCharacter(attributeVals, attributes){
     else if(distribution === 'balanced'){
         skillVals = [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
-    else{
+    else if(distribution === 'jack'){
         skillVals = [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    else{
+        let valGroup = [[4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]]
+        const currValIndex = Math.floor(Math.random()*(valGroup.length))
+        if(currValIndex === 0){
+            distribution = 'specialist';
+            randomDist.innerText = 'Specialist';
+            skillVals = valGroup[0];
+        }
+        else if(currValIndex === 1){
+            distribution = 'balanced';
+            randomDist.innerText = 'Balanced';
+            skillVals = valGroup[1];
+        }
+        else{
+            distribution = 'jack'
+            randomDist.innerText = 'Jack-of-all-Trades';
+            skillVals = valGroup[2];
+        }
     }
     skillBlock = assignAttributeVals(skillVals, skills, skillBlock);
     let str = stats['Strength'];

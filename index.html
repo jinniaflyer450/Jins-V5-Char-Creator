@@ -23,12 +23,14 @@
         <input type='text' autocomplete='Character' id='char-name'>
         <div>
             <span>Skills Distribution:</span>
-            <label for='specialist'>Specialist:</label>
+            <label for='sp'>Specialist:</label>
             <input type='radio' name='distribution' value='specialist' id='sp'>
-            <label for='balanced'>Balanced:</label>
+            <label for='bl'>Balanced:</label>
             <input type='radio' name='distribution' value='balanced' id='bl'>
-            <label for='jack'>Jack-of-All-Trades:</label>
+            <label for='jk'>Jack-of-All-Trades:</label>
             <input type='radio' name='distribution' value='jack' id='jk'>
+            <label for='rd'>Random: (picked <span id='random-dist'></span>)</label>
+            <input type='radio' name='distribution' value='random' id='rd'>
         </div>
         <div>
             <span>Clan:</span>
@@ -60,6 +62,8 @@
             <input type='radio' name='clan' value='tzimisce' id='tzimisce'>
             <label for='ventrue'>Ventrue:</label>
             <input type='radio' name='clan' value='ventrue' id='ventrue'>
+            <label for='random'>Random: (picked <span id='random-clan'>)</span></label>
+            <input type='radio' name='clan' value='random' id='random'>
         </div>
     </form>
     <h3>Attributes:</h3>
