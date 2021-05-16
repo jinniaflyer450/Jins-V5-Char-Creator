@@ -5,44 +5,87 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VtM V5 Character Generator</title>
+    <link rel="stylesheet" href="app.css">
 </head>
 <body>
     <h1>Character Generator:</h1>
     <h2>Instructions:</h2>
-    <p>Press the "Go!" button to generate stats for a VtM V5 PC. To save stats, press the "Save" button.</p>
+    <p>Press the "Go!" button to generate stats for a VtM V5 PC. Make sure to choose your skills distribution--specialist, balanced, or jack-of-all-trades--and clan. To save stats, press the "Save" button. More functionality to come!</p>
+    <p>Coming next: Ability to create Caitiff and thin-blood characters.</p>
     <h2>The Generator:</h2>
     <button id="create-character">Go!</button>
     <button id="save-character">Save</button>
+    <h3>Basic Info:</h3>
     <form>
-        <label for='char-name'>Enter a name or label here:</label>
+        <label for='char-name'>Name or Label:</label>
         <input type='text' autocomplete='Character' id='char-name'>
+        <div>
+            <span>Skills Distribution:</span>
+            <label for='specialist'>Specialist:</label>
+            <input type='radio' name='distribution' value='specialist' id='sp'>
+            <label for='balanced'>Balanced:</label>
+            <input type='radio' name='distribution' value='balanced' id='bl'>
+            <label for='jack'>Jack-of-All-Trades:</label>
+            <input type='radio' name='distribution' value='jack' id='jk'>
+        </div>
+        <div>
+            <span>Clan:</span>
+            <label for='banu-haqim'>Banu Haqim:</label>
+            <input type='radio' name='clan' value='banu-haqim' id='banu-haqim'>
+            <label for='brujah'>Brujah:</label>
+            <input type='radio' name='clan' value='brujah' id='brujah'>
+            <label for='gangrel'>Gangrel:</label>
+            <input type='radio' name='clan' value='gangrel' id='gangrel'>
+            <label for='hecata'>Hecata:</label>
+            <input type='radio' name='clan' value='hecata' id='hecata'>
+            <label for='lasombra'>Lasombra:</label>
+            <input type='radio' name='clan' value='lasombra' id='lasombra'>
+            <label for='malkavian'>Malkavian:</label>
+            <input type='radio' name='clan' value='malkavian' id='malkavian'>
+            <label for='ministry'>Ministry:</label>
+            <input type='radio' name='clan' value='ministry' id='ministry'>
+            <label for='nosferatu'>Nosferatu:</label>
+            <input type='radio' name='clan' value='nosferatu' id='nosferatu'>
+            <label for='ravnos'>Ravnos:</label>
+            <input type='radio' name='clan' value='ravnos' id='ravnos'>
+            <label for='salubri'>Salubri:</label>
+            <input type='radio' name='clan' value='salubri' id='salubri'>
+            <label for='toreador'>Toreador:</label>
+            <input type='radio' name='clan' value='toreador' id='toreador'>
+            <label for='tremere'>Tremere:</label>
+            <input type='radio' name='clan' value='tremere' id='tremere'>
+            <label for='tzimisce'>Tzimisce:</label>
+            <input type='radio' name='clan' value='tzimisce' id='tzimisce'>
+            <label for='ventrue'>Ventrue:</label>
+            <input type='radio' name='clan' value='ventrue' id='ventrue'>
+        </div>
     </form>
-    <h3>Basic Attributes:</h3>
+    <h3>Attributes:</h3>
     <table>
         <tbody>
             <tr>
                 <td>Strength:</td>
-                <td><p id="str"></p></td>
+                <td id="str"></td>
                 <td>Charisma:</td>
-                <td><p id="cha"></p></td>
+                <td id="cha"></td>
                 <td>Intelligence:</td>
-                <td><p id= "int"></p></td>
+                <td id="int"></td>
             </tr>
             <tr>
                 <td>Dexterity:</td>
-                <td><p id="dex"></p></td>
+                <td id="dex"></td>
                 <td>Manipulation:</td>
-                <td><p id="mnp"></p></td>
+                <td id="mnp"></td>
                 <td>Wits:</td>
-                <td><p id="wit"></p></td>
+                <td id="wit"></td>
             </tr>
             <tr>
                 <td>Stamina:</td>
-                <td><p id= "stm"></p></td>
+                <td id="stm"></td>
                 <td>Composure:</td>
-                <td><p id="cmp"></p></td>
+                <td id="cmp"></td>
                 <td>Resolve:</td>
-                <td><p id="rsv"></p></td>
+                <td id="rsv"></td>
             </tr>
         </tbody>
     </table>
@@ -120,6 +163,41 @@
                 <td id="subterfuge"></td>
                 <td>Technology:</td>
                 <td id="technology"></td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>Disciplines:</h3>
+    <table>
+        <tbody>
+            <tr>
+                <td>Animalism:</td>
+                <td id='animalism'></td>
+                <td>Auspex:</td>
+                <td id='auspex'></td>
+                <td>Celerity:</td>
+                <td id='celerity'></td>
+            </tr>
+            <tr>
+                <td>Dominate:</td>
+                <td id='dominate'></td>
+                <td>Fortitude:</td>
+                <td id='fortitude'></td>
+                <td>Obfuscate:</td>
+                <td id= 'obfuscate'></td>
+            </tr>
+            <tr>
+                <td>Oblivion:</td>
+                <td id='oblivion'></td>
+                <td>Potence:</td>
+                <td id='potence'></td>
+                <td>Presence:</td>
+                <td id='presence'></td>
+            </tr>
+            <tr>
+                <td>Protean:</td>
+                <td id='protean'></td>
+                <td>Blood Sorcery:</td>
+                <td id= 'blood-sorcery'></td>
             </tr>
         </tbody>
     </table>

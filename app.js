@@ -4,7 +4,34 @@ const skills = ['Athletics', 'Animal Ken', 'Academics', 'Brawl', 'Etiquette', 'A
 let skillVals = [];
 let statBlock = {};
 let skillBlock = {};
+let disBlock = {};
+
+const allNormalDisciplines = ['Animalism', 'Auspex', 'Celerity', 'Dominate', 'Fortitude', 'Obfuscate', 'Oblivion', 'Potence', 'Presence', 'Protean', 'Blood Sorcery'];
+const banuHaqimDis = ['Blood Sorcery', 'Celerity', 'Obfuscate'];
+const brujahDis = ['Celerity', 'Potence', 'Presence'];
+const gangrelDis = ['Animalism', 'Fortitude', 'Protean'];
+const hecataDis = ['Auspex', 'Fortitude', 'Oblivion'];
+const lasombraDis = ['Dominate', 'Oblivion', 'Potence'];
+const malkDis = ['Auspex', 'Obfuscate', 'Dominate'];
+const nosDis = ['Animalism', 'Obfuscate', 'Potence'];
+const minDis = ['Obfuscate', 'Presence', 'Protean'];
+const ravnosDis = ['Animalism', 'Obfuscate', 'Presence'];
+const salubriDis = ['Auspex', 'Dominate', 'Fortitude'];
+const thinDis = ['Thin-Blood Alchemy'];
+const torDis = ['Auspex', 'Celerity', 'Presence'];
+const tremDis = ['Auspex', 'Dominate', 'Blood Sorcery'];
+const tzimDis = ['Animalism', 'Dominate', 'Protean'];
+const venDis = ['Dominate', 'Fortitude', 'Presence'];
+const clanDisciplines = {
+    'banu-haqim': banuHaqimDis, 'brujah': brujahDis, 'caitiff': allNormalDisciplines, 
+    'gangrel': gangrelDis, 'hecata': hecataDis, 'lasombra': lasombraDis,
+    'malkavian': malkDis, 'nosferatu': nosDis, 'ministry': minDis,
+    'ravnos': ravnosDis, 'salubri': salubriDis, 'toreador': torDis,
+    'tremere': tremDis, 'tzimisce': tzimDis, 'ventrue': venDis
+}
+
 let nameDom = document.querySelector('#char-name');
+
 let strDom = document.querySelector('#str');
 let dexDom = document.querySelector('#dex');
 let stmDom = document.querySelector('#stm');
@@ -14,6 +41,7 @@ let cmpDom = document.querySelector('#cmp');
 let intDom = document.querySelector('#int');
 let witDom = document.querySelector('#wit');
 let rsvDom = document.querySelector('#rsv');
+
 let atDom = document.querySelector('#athletics');
 let akDom = document.querySelector('#animal-ken');
 let acDom = document.querySelector('#academics');
@@ -42,7 +70,17 @@ let svDom = document.querySelector('#survival');
 let sbDom = document.querySelector('#subterfuge');
 let tcDom = document.querySelector('#technology');
 
-
+let animDom = document.querySelector('#animalism');
+let auspDom = document.querySelector('#auspex');
+let celeDom = document.querySelector('#celerity');
+let domiDom = document.querySelector('#dominate');
+let fortDom = document.querySelector('#fortitude');
+let obfuDom = document.querySelector('#obfuscate');
+let obliDom = document.querySelector('#oblivion');
+let poteDom = document.querySelector('#potence');
+let presDom = document.querySelector('#presence');
+let protDom = document.querySelector('#protean');
+let blooDom = document.querySelector('#blood-sorcery');
 
 function randomizeAttributeVal(valGroup){
     const currValIndex = Math.floor(Math.random()*(valGroup.length));
@@ -61,15 +99,55 @@ function assignAttributeVals(valGroup, attributeGroup, block){
     return block;
 }
 
+function distributeClanDisciplines(clan){
+    let clanDisVals = [2, 1, 0];
+    return assignAttributeVals(clanDisVals, clanDisciplines[clan], disBlock);
+}
+
+function distributeRestDisciplines(clan){
+    for(discipline of allNormalDisciplines){
+        if(clanDisciplines[clan].includes(discipline)){
+            continue;
+        }
+        else{
+            disBlock[discipline] = 0;
+        }
+    }
+}
+
 function resetGenerator(){
     attributeVals = [4, 3, 3, 3, 2, 2, 2, 2, 1];
     statBlock = {};
     skillBlock = {};
     skillVals = [];
+    clanDisVals = [];
+    disBlock = {};
 }
 
 function createCharacter(attributeVals, attributes){
+    let clanDom = [...document.getElementsByName('clan')];
+    let charClan = null;
+    for(clan of clanDom){
+        if(clan.checked === true){
+            charClan = clan.value;
+        }
+        else{
+            continue;
+        }
+    }
+    distributeClanDisciplines(charClan);
+    distributeRestDisciplines(charClan);
     let stats = assignAttributeVals(attributeVals, attributes, statBlock);
+    let distribution = null;
+    let distDom = [...document.getElementsByName('distribution')]
+    for(distBtn of distDom){
+        if(distBtn.checked === true){
+            distribution = distBtn.value;
+        }
+        else{
+            continue;
+        }
+    }
     if(distribution === 'specialist'){
         skillVals = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
@@ -89,6 +167,7 @@ function createCharacter(attributeVals, attributes){
     let int = stats['Intelligence'];
     let wit = stats['Wits'];
     let rsv = stats['Resolve'];
+    
     let at = skillBlock['Athletics'];
     let ak = skillBlock['Animal Ken'];
     let ac = skillBlock['Academics'];
@@ -116,6 +195,18 @@ function createCharacter(attributeVals, attributes){
     let sv = skillBlock['Survival'];
     let sb = skillBlock['Subterfuge'];
     let tc = skillBlock['Technology'];
+    
+    let anim = disBlock['Animalism'];
+    let ausp = disBlock['Auspex'];
+    let cele = disBlock['Celerity'];
+    let domi = disBlock['Dominate'];
+    let fort = disBlock['Fortitude'];
+    let obfu = disBlock['Obfuscate'];
+    let obli = disBlock['Oblivion'];
+    let pote = disBlock['Potence'];
+    let pres = disBlock['Presence'];
+    let prot = disBlock['Protean'];
+    let bloo = disBlock['Blood Sorcery'];
 
     strDom.innerText = str;
     dexDom.innerText = dex;
@@ -126,6 +217,7 @@ function createCharacter(attributeVals, attributes){
     intDom.innerText = int;
     witDom.innerText = wit;
     rsvDom.innerText = rsv;
+
     atDom.innerText = at;
     akDom.innerText = ak;
     acDom.innerText = ac;
@@ -153,6 +245,18 @@ function createCharacter(attributeVals, attributes){
     svDom.innerText = sv;
     sbDom.innerText = sb;
     tcDom.innerText = tc;
+
+    animDom.innerText = anim;
+    auspDom.innerText = ausp;
+    celeDom.innerText = cele;
+    domiDom.innerText = domi;
+    fortDom.innerText = fort;
+    obfuDom.innerText = obfu;
+    obliDom.innerText = obli;
+    poteDom.innerText = pote;
+    presDom.innerText = pres;
+    protDom.innerText = prot;
+    blooDom.innerText = bloo;
 }
 
 document.querySelector('#create-character').addEventListener('click', function(e){
@@ -166,9 +270,14 @@ document.querySelector('#create-character').addEventListener('click', function(e
 function saveStats(){
     const charName = nameDom.value;
     const savedStats = document.createElement('div');
+    const savedStatsName = document.createElement('h3');
     const savedStatsAttr = document.createElement('p');
     const savedStatsSkills = document.createElement('p');
-    savedStatsAttr.innerText = `${charName}: `
+    const savedStatsDisciplines = document.createElement('p');
+    savedStatsName.innerText = `${charName}: `
+    savedStatsAttr.innerText = `Attributes: `
+    savedStatsSkills.innerText = `Skills: `
+    savedStatsDisciplines.innerText = `Disciplines:`
     for(let [key, value] of Object.entries(statBlock)){
         savedStatsAttr.innerText += `${key} ${value} `
     }
@@ -180,10 +289,22 @@ function saveStats(){
             continue;
         }
     }
+    for(let [key, value] of Object.entries(disBlock)){
+        if(value !== 0){
+            savedStatsDisciplines.innerText += `${key} ${value} `
+        }
+        else{
+            continue;
+        }
+    }
     savedStatsSkills.innerText.length--;
+    savedStatsAttr.innerText.length--;
+    savedStatsDisciplines.innerText.length--;
     savedStats.classList.add('saved-stats');
+    savedStats.append(savedStatsName);
     savedStats.append(savedStatsAttr);
     savedStats.append(savedStatsSkills);
+    savedStats.append(savedStatsDisciplines);
     document.querySelector('#saved-sheets').append(savedStats);
 }
 
