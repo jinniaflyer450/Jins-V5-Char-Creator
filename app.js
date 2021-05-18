@@ -1,113 +1,38 @@
-const attributes = ['Strength', 'Dexterity', 'Stamina', 'Charisma', 'Manipulation', 'Composure', 'Intelligence', 'Wits', 'Resolve'];
-let attributeVals = [4, 3, 3, 3, 2, 2, 2, 2, 1];
-const skills = ['Athletics', 'Animal Ken', 'Academics', 'Brawl', 'Etiquette', 'Awareness', 'Craft', 'Insight', 'Finance', 'Drive', 'Intimidation', 'Investigation', 'Firearms', 'Leadership', 'Medicine', 'Larceny', 'Performance', 'Occult', 'Melee', 'Persuasion', 'Politics', 'Stealth', 'Streetwise', 'Science', 'Survival', 'Subterfuge', 'Technology'];
-let skillVals = [];
-let statBlock = {};
-let skillBlock = {};
-let disBlock = {};
+//This app randomly generates player characters or Storyteller player characters for Vampire: the Masquerade version 5.
 
-const allNormalDisciplines = ['Animalism', 'Auspex', 'Celerity', 'Dominate', 'Fortitude', 'Obfuscate', 'Oblivion', 'Potence', 'Presence', 'Protean', 'Blood Sorcery'];
-const banuHaqimDis = ['Blood Sorcery', 'Celerity', 'Obfuscate'];
-const brujahDis = ['Celerity', 'Potence', 'Presence'];
-const gangrelDis = ['Animalism', 'Fortitude', 'Protean'];
-const hecataDis = ['Auspex', 'Fortitude', 'Oblivion'];
-const lasombraDis = ['Dominate', 'Oblivion', 'Potence'];
-const malkDis = ['Auspex', 'Obfuscate', 'Dominate'];
-const nosDis = ['Animalism', 'Obfuscate', 'Potence'];
-const minDis = ['Obfuscate', 'Presence', 'Protean'];
-const ravnosDis = ['Animalism', 'Obfuscate', 'Presence'];
-const salubriDis = ['Auspex', 'Dominate', 'Fortitude'];
-const thinDis = ['Thin-Blood Alchemy'];
-const torDis = ['Auspex', 'Celerity', 'Presence'];
-const tremDis = ['Auspex', 'Dominate', 'Blood Sorcery'];
-const tzimDis = ['Animalism', 'Dominate', 'Protean'];
-const venDis = ['Dominate', 'Fortitude', 'Presence'];
-const clanDisciplines = {
-    'banu-haqim': banuHaqimDis, 'brujah': brujahDis, 'caitiff': allNormalDisciplines, 
-    'gangrel': gangrelDis, 'hecata': hecataDis, 'lasombra': lasombraDis,
-    'malkavian': malkDis, 'nosferatu': nosDis, 'ministry': minDis,
-    'ravnos': ravnosDis, 'salubri': salubriDis, 'toreador': torDis,
-    'tremere': tremDis, 'tzimisce': tzimDis, 'ventrue': venDis
-}
-
-let nameDom = document.querySelector('#char-name');
-
-let strDom = document.querySelector('#str');
-let dexDom = document.querySelector('#dex');
-let stmDom = document.querySelector('#stm');
-let chaDom = document.querySelector('#cha');
-let mnpDom = document.querySelector('#mnp');
-let cmpDom = document.querySelector('#cmp');
-let intDom = document.querySelector('#int');
-let witDom = document.querySelector('#wit');
-let rsvDom = document.querySelector('#rsv');
-
-let atDom = document.querySelector('#athletics');
-let akDom = document.querySelector('#animal-ken');
-let acDom = document.querySelector('#academics');
-let brDom = document.querySelector('#brawl');
-let eqDom = document.querySelector('#etiquette');
-let awDom = document.querySelector('#awareness');
-let crDom = document.querySelector('#craft');
-let isDom = document.querySelector('#insight');
-let fcDom = document.querySelector('#finance');
-let drDom = document.querySelector('#drive');
-let itDom = document.querySelector('#intimidation');
-let ivDom = document.querySelector('#investigation');
-let faDom = document.querySelector('#firearms');
-let ldDom = document.querySelector('#leadership');
-let mdDom = document.querySelector('#medicine');
-let lcDom = document.querySelector('#larceny');
-let pfDom = document.querySelector('#performance');
-let ocDom = document.querySelector('#occult');
-let mlDom = document.querySelector('#melee');
-let psDom = document.querySelector('#persuasion');
-let poDom = document.querySelector('#politics');
-let shDom = document.querySelector('#stealth');
-let swDom = document.querySelector('#streetwise');
-let scDom = document.querySelector('#science');
-let svDom = document.querySelector('#survival');
-let sbDom = document.querySelector('#subterfuge');
-let tcDom = document.querySelector('#technology');
-
-let animDom = document.querySelector('#animalism');
-let auspDom = document.querySelector('#auspex');
-let celeDom = document.querySelector('#celerity');
-let domiDom = document.querySelector('#dominate');
-let fortDom = document.querySelector('#fortitude');
-let obfuDom = document.querySelector('#obfuscate');
-let obliDom = document.querySelector('#oblivion');
-let poteDom = document.querySelector('#potence');
-let presDom = document.querySelector('#presence');
-let protDom = document.querySelector('#protean');
-let blooDom = document.querySelector('#blood-sorcery');
-
-let randomClan = document.querySelector('#random-clan');
-let randomDist = document.querySelector('#random-dist');
-
-function randomizeAttributeVal(valGroup){
-    const currValIndex = Math.floor(Math.random()*(valGroup.length));
-    const currVal = valGroup[currValIndex];
-    valGroup.splice(currValIndex, 1);
-    return currVal;
+/*The function that, given an array of dot values, chooses a random index within that array, takes the value at that index, 
+removes the value at that index, and returns the value that was at that index.*/
+function randomizeAttributeDots(dotsGroup){
+    const currDotsIndex = Math.floor(Math.random()*(dotsGroup.length));
+    const currDots = dotsGroup[currDotsIndex];
+    dotsGroup.splice(currDotsIndex, 1);
+    return currDots;
 }
 
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values Recalled how to use Object.values() here.
 
-function assignAttributeVals(valGroup, attributeGroup, block){
+
+/*The function that, given an array of dot values, an array of corresponding labels for those dot values, and a recipient object,
+selects a random value in the array of dot values for each label in the array of labels and creates a key-value pair in the recipient
+object with a key of the label and a value of the dot value. It returns the recipient object when complete.*/
+function assignAttributeDots(dotsGroup, attributeGroup, block){
     for(let attribute of attributeGroup){
-        let attributeVal = randomizeAttributeVal(valGroup);
-        block[attribute] = attributeVal;
+        let attributeDots = randomizeAttributeDots(dotsGroup);
+        block[attribute] = attributeDots;
     }
     return block;
 }
 
-function distributeClanDisciplines(clan){
-    let clanDisVals = [2, 1, 0];
-    return assignAttributeVals(clanDisVals, clanDisciplines[clan], disBlock);
+/*The function that, given a selected or randomized clan, returns an object with key-value pairs where each key is a clan discipline
+and each value is the randomly-assigned number of dots a character has in that discipline.*/
+function distributeClanDisciplines(clan, disBlock){
+    let clanDisDots = [2, 1, 0];
+    assignAttributeDots(clanDisDots, clanDisciplines[clan], disBlock);
 }
 
-function distributeRestDisciplines(clan){
+/*The function that, given a selected or randomized clan, populates the object where each key is a discipline and each value is the number
+of dots the character has in that discipline with the remaining disciplines after clan disciplines are accounted for.*/
+function distributeRestDisciplines(clan, disBlock){
     for(discipline of allNormalDisciplines){
         if(clanDisciplines[clan].includes(discipline)){
             continue;
@@ -118,16 +43,15 @@ function distributeRestDisciplines(clan){
     }
 }
 
+//The function that resets the generator after each use so that it may be used again.
 function resetGenerator(){
-    attributeVals = [4, 3, 3, 3, 2, 2, 2, 2, 1];
-    statBlock = {};
-    skillBlock = {};
-    skillVals = [];
-    clanDisVals = [];
-    disBlock = {};
+    character = null;
 }
 
-function createCharacter(attributeVals, attributes){
+/*The function that randomly generates a character's clan, basic attributes, skills, and disciplines based on selected options.
+and displays them in the DOM.*/
+function createCharacter(attributes){
+    const charName = nameDom.value;
     let clanDom = [...document.getElementsByName('clan')];
     let charClan = null;
     for(clan of clanDom){
@@ -135,7 +59,6 @@ function createCharacter(attributeVals, attributes){
             charClan = clan.value;
         }
         else if(clan.checked === true){
-            const clanList = ['banu-haqim', 'brujah', 'gangrel', 'hecata', 'lasombra', 'malkavian', 'ministry', 'nosferatu', 'ravnos', 'salubri', 'toreador', 'tremere', 'tzimisce', 'ventrue'];
             const currValIndex = Math.floor(Math.random()*(clanList.length))
             charClan = clanList[currValIndex];
             randomClan.innerText = charClan;
@@ -144,159 +67,122 @@ function createCharacter(attributeVals, attributes){
             continue;
         }
     }
-    distributeClanDisciplines(charClan);
-    distributeRestDisciplines(charClan);
-    let stats = assignAttributeVals(attributeVals, attributes, statBlock);
+    let attributeDots = [4, 3, 3, 3, 2, 2, 2, 2, 1];
+    let attrBlock = {};
+    let skillBlock = {};
+    let skillDots = [];
+    let disBlock = {};
+    distributeClanDisciplines(charClan, disBlock);
+    distributeRestDisciplines(charClan, disBlock);
+    assignAttributeDots(attributeDots, attributes, attrBlock);
     let distribution = null;
     let distDom = [...document.getElementsByName('distribution')]
-    for(distBtn of distDom){
-        if(distBtn.checked === true){
-            distribution = distBtn.value;
+    for(distOption of distDom){
+        if(distOption.checked === true){
+            distribution = distOption.value;
         }
         else{
             continue;
         }
     }
     if(distribution === 'specialist'){
-        skillVals = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        skillDots = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
     else if(distribution === 'balanced'){
-        skillVals = [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        skillDots = [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
     else if(distribution === 'jack'){
-        skillVals = [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+        skillDots = [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
     }
     else{
-        let valGroup = [[4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]]
-        const currValIndex = Math.floor(Math.random()*(valGroup.length))
+        let allDist = [[4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]]
+        const currValIndex = Math.floor(Math.random()*(allDist.length))
         if(currValIndex === 0){
             distribution = 'specialist';
             randomDist.innerText = 'Specialist';
-            skillVals = valGroup[0];
+            skillDots = allDist[0];
         }
         else if(currValIndex === 1){
             distribution = 'balanced';
             randomDist.innerText = 'Balanced';
-            skillVals = valGroup[1];
+            skillDots = allDist[1];
         }
         else{
             distribution = 'jack'
             randomDist.innerText = 'Jack-of-all-Trades';
-            skillVals = valGroup[2];
+            skillDots = allDist[2];
         }
     }
-    skillBlock = assignAttributeVals(skillVals, skills, skillBlock);
-    let str = stats['Strength'];
-    let dex = stats['Dexterity'];
-    let stm = stats['Stamina'];
-    let cha = stats['Charisma'];
-    let mnp = stats['Manipulation'];
-    let cmp = stats['Composure'];
-    let int = stats['Intelligence'];
-    let wit = stats['Wits'];
-    let rsv = stats['Resolve'];
-    
-    let at = skillBlock['Athletics'];
-    let ak = skillBlock['Animal Ken'];
-    let ac = skillBlock['Academics'];
-    let br = skillBlock['Brawl'];
-    let eq = skillBlock['Etiquette'];
-    let aw = skillBlock['Awareness'];
-    let cr = skillBlock['Craft'];
-    let is = skillBlock['Insight'];
-    let fc = skillBlock['Finance'];
-    let dr = skillBlock['Drive'];
-    let it = skillBlock['Intimidation'];
-    let iv = skillBlock['Investigation'];
-    let fa = skillBlock['Firearms'];
-    let ld = skillBlock['Leadership'];
-    let md = skillBlock['Medicine'];
-    let lc = skillBlock['Larceny'];
-    let pf = skillBlock['Performance'];
-    let oc = skillBlock['Occult'];
-    let ml = skillBlock['Melee'];
-    let ps = skillBlock['Persuasion'];
-    let po = skillBlock['Politics'];
-    let sh = skillBlock['Stealth'];
-    let sw = skillBlock['Streetwise'];
-    let sc = skillBlock['Science'];
-    let sv = skillBlock['Survival'];
-    let sb = skillBlock['Subterfuge'];
-    let tc = skillBlock['Technology'];
-    
-    let anim = disBlock['Animalism'];
-    let ausp = disBlock['Auspex'];
-    let cele = disBlock['Celerity'];
-    let domi = disBlock['Dominate'];
-    let fort = disBlock['Fortitude'];
-    let obfu = disBlock['Obfuscate'];
-    let obli = disBlock['Oblivion'];
-    let pote = disBlock['Potence'];
-    let pres = disBlock['Presence'];
-    let prot = disBlock['Protean'];
-    let bloo = disBlock['Blood Sorcery'];
+    assignAttributeDots(skillDots, skills, skillBlock);
+    let character = new Character(charName, charClan, attrBlock, skillBlock, disBlock);
+    const charAttr = character.attributes;
+    const charSkills = character.skills;
+    const charDis = character.disciplines;
 
-    strDom.innerText = str;
-    dexDom.innerText = dex;
-    stmDom.innerText = stm;
-    chaDom.innerText = cha;
-    mnpDom.innerText = mnp;
-    cmpDom.innerText = cmp;
-    intDom.innerText = int;
-    witDom.innerText = wit;
-    rsvDom.innerText = rsv;
+    strDom.innerText = charAttr['Strength'];
+    dexDom.innerText = charAttr['Dexterity'];
+    stmDom.innerText = charAttr['Stamina'];
+    chaDom.innerText = charAttr['Charisma'];
+    mnpDom.innerText = charAttr['Manipulation'];
+    cmpDom.innerText = charAttr['Composure'];
+    intDom.innerText = charAttr['Intelligence'];
+    witDom.innerText = charAttr['Wits'];
+    rsvDom.innerText = charAttr['Resolve'];
 
-    atDom.innerText = at;
-    akDom.innerText = ak;
-    acDom.innerText = ac;
-    brDom.innerText = br;
-    eqDom.innerText = eq;
-    awDom.innerText = aw;
-    crDom.innerText = cr;
-    isDom.innerText = is;
-    fcDom.innerText = fc;
-    drDom.innerText = dr;
-    itDom.innerText = it;
-    ivDom.innerText = iv;
-    faDom.innerText = fa;
-    ldDom.innerText = ld;
-    mdDom.innerText = md;
-    lcDom.innerText = lc;
-    pfDom.innerText = pf;
-    ocDom.innerText = oc;
-    mlDom.innerText = ml;
-    psDom.innerText = ps;
-    poDom.innerText = po;
-    shDom.innerText = sh;
-    swDom.innerText = sw;
-    scDom.innerText = sc;
-    svDom.innerText = sv;
-    sbDom.innerText = sb;
-    tcDom.innerText = tc;
+    atDom.innerText = charSkills['Athletics'];
+    akDom.innerText = charSkills['Animal Ken'];
+    acDom.innerText = charSkills['Academics'];
+    brDom.innerText = charSkills['Brawl'];
+    eqDom.innerText = charSkills['Etiquette'];
+    awDom.innerText = charSkills['Awareness'];
+    crDom.innerText = charSkills['Craft'];
+    isDom.innerText = charSkills['Insight'];
+    fcDom.innerText = charSkills['Finance'];
+    drDom.innerText = charSkills['Drive'];
+    itDom.innerText = charSkills['Intimidation'];
+    ivDom.innerText = charSkills['Investigation'];
+    faDom.innerText = charSkills['Firearms'];
+    ldDom.innerText = charSkills['Leadership'];
+    mdDom.innerText = charSkills['Medicine'];
+    lcDom.innerText = charSkills['Larceny'];
+    pfDom.innerText = charSkills['Performance'];
+    ocDom.innerText = charSkills['Occult'];
+    mlDom.innerText = charSkills['Melee'];
+    psDom.innerText = charSkills['Persuasion'];
+    poDom.innerText = charSkills['Politics'];
+    shDom.innerText = charSkills['Stealth'];
+    swDom.innerText = charSkills['Streetwise'];
+    scDom.innerText = charSkills['Science'];
+    svDom.innerText = charSkills['Survival'];
+    sbDom.innerText = charSkills['Subterfuge'];
+    tcDom.innerText = charSkills['Technology'];
 
-    animDom.innerText = anim;
-    auspDom.innerText = ausp;
-    celeDom.innerText = cele;
-    domiDom.innerText = domi;
-    fortDom.innerText = fort;
-    obfuDom.innerText = obfu;
-    obliDom.innerText = obli;
-    poteDom.innerText = pote;
-    presDom.innerText = pres;
-    protDom.innerText = prot;
-    blooDom.innerText = bloo;
+    animDom.innerText = charDis['Animalism'];
+    auspDom.innerText = charDis['Auspex'];
+    celeDom.innerText = charDis['Celerity'];
+    domiDom.innerText = charDis['Dominate'];
+    fortDom.innerText = charDis['Fortitude'];
+    obfuDom.innerText = charDis['Obfuscate'];
+    obliDom.innerText = charDis['Oblivion'];
+    poteDom.innerText = charDis['Potence'];
+    presDom.innerText = charDis['Presence'];
+    protDom.innerText = charDis['Protean'];
+    blooDom.innerText = charDis['Blood Sorcery'];
+
+    return character;
 }
 
+//The function that runs every time a user presses the 'Go' button in the app.
 document.querySelector('#create-character').addEventListener('click', function(e){
     e.preventDefault();
     resetGenerator();
-    createCharacter(attributeVals, attributes);
+    character = createCharacter(attributes);
 })
 
 
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys Was reminded of how to name pairs here.
+/*The function that creates a div containing all relevant information for the character for later use and appends it to the DOM.*/
 function saveStats(){
-    const charName = nameDom.value;
     const savedStats = document.createElement('div');
     const savedStatsName = document.createElement('h3');
     const savedStatsAttr = document.createElement('p');
@@ -305,11 +191,11 @@ function saveStats(){
     savedStatsName.innerText = `${charName}: `
     savedStatsAttr.innerText = `Attributes: `
     savedStatsSkills.innerText = `Skills: `
-    savedStatsDisciplines.innerText = `Disciplines:`
-    for(let [key, value] of Object.entries(statBlock)){
+    savedStatsDisciplines.innerText = `Disciplines: `
+    for(let [key, value] of Object.entries(character.attributes)){
         savedStatsAttr.innerText += `${key} ${value} `
     }
-    for(let [key, value] of Object.entries(skillBlock)){
+    for(let [key, value] of Object.entries(character.skills)){
         if(value !== 0){
             savedStatsSkills.innerText += `${key} ${value} `
         }
@@ -317,7 +203,7 @@ function saveStats(){
             continue;
         }
     }
-    for(let [key, value] of Object.entries(disBlock)){
+    for(let [key, value] of Object.entries(character.disciplines)){
         if(value !== 0){
             savedStatsDisciplines.innerText += `${key} ${value} `
         }
@@ -336,6 +222,7 @@ function saveStats(){
     document.querySelector('#saved-sheets').append(savedStats);
 }
 
+//The function that runs every time a user clicks the 'save' button in the app.
 document.querySelector('#save-character').addEventListener('click', function(e){
     e.preventDefault();
     saveStats();
