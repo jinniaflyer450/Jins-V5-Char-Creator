@@ -188,7 +188,7 @@ function saveStats(){
     const savedStatsAttr = document.createElement('p');
     const savedStatsSkills = document.createElement('p');
     const savedStatsDisciplines = document.createElement('p');
-    savedStatsName.innerText = `${charName}: `
+    savedStatsName.innerText = `${character.name}: `
     savedStatsAttr.innerText = `Attributes: `
     savedStatsSkills.innerText = `Skills: `
     savedStatsDisciplines.innerText = `Disciplines: `
