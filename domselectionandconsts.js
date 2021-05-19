@@ -12,7 +12,7 @@ let character = null;
 
 //All available clans and all available disciplines (TODO: add thin-bloods, caitiffs, and none/mortals and/or ghouls)
 const clanList = ['banu-haqim', 'brujah', 'gangrel', 'hecata', 'lasombra', 'malkavian', 'ministry', 
-                'nosferatu', 'ravnos', 'salubri', 'toreador', 'tremere', 'tzimisce', 'ventrue'];
+                'nosferatu', 'ravnos', 'salubri', 'toreador', 'tremere', 'thin-blood', 'tzimisce', 'ventrue'];
 const allNormalDisciplines = ['Animalism', 'Auspex', 'Celerity', 'Dominate', 'Fortitude', 'Obfuscate', 
                             'Oblivion', 'Potence', 'Presence', 'Protean', 'Blood Sorcery'];
 
@@ -38,8 +38,9 @@ const clanDisciplines = {
     'banu-haqim': banuHaqimDis, 'brujah': brujahDis, 'caitiff': allNormalDisciplines, 
     'gangrel': gangrelDis, 'hecata': hecataDis, 'lasombra': lasombraDis,
     'malkavian': malkDis, 'nosferatu': nosDis, 'ministry': minDis,
-    'ravnos': ravnosDis, 'salubri': salubriDis, 'toreador': torDis,
-    'tremere': tremDis, 'tzimisce': tzimDis, 'ventrue': venDis
+    'ravnos': ravnosDis, 'salubri': salubriDis, 'thin-blood': thinDis, 
+    'toreador': torDis, 'tremere': tremDis, 'tzimisce': tzimDis, 
+    'ventrue': venDis
 }
 
 //The input in the DOM that allows users to enter a name or label.
@@ -97,6 +98,7 @@ let poteDom = document.querySelector('#potence');
 let presDom = document.querySelector('#presence');
 let protDom = document.querySelector('#protean');
 let blooDom = document.querySelector('#blood-sorcery');
+let thinAlchDom = document.querySelector('#thin-blood-alchemy');
 
 //The areas where randomly picked clans and skill dot distributions are shown (if the user randomized them) after the app runs.
 let randomClan = document.querySelector('#random-clan');

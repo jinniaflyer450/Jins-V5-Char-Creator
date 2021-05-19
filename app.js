@@ -26,15 +26,24 @@ function assignAttributeDots(dotsGroup, attributeGroup, block){
 /*The function that, given a selected or randomized clan, returns an object with key-value pairs where each key is a clan discipline
 and each value is the randomly-assigned number of dots a character has in that discipline.*/
 function distributeClanDisciplines(clan, disBlock){
-    let clanDisDots = [2, 1, 0];
+    let clanDisDots = null;
+    if(clan === 'caitiff'){
+        clanDisDots = [2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+    else if(clan === 'thin-blood'){
+        clanDisDots = [0]
+    }
+    else{
+        clanDisDots = [2, 1, 0];
+    }
     assignAttributeDots(clanDisDots, clanDisciplines[clan], disBlock);
 }
 
 /*The function that, given a selected or randomized clan, populates the object where each key is a discipline and each value is the number
 of dots the character has in that discipline with the remaining disciplines after clan disciplines are accounted for.*/
-function distributeRestDisciplines(clan, disBlock){
+function distributeRestDisciplines(disBlock){
     for(discipline of allNormalDisciplines){
-        if(clanDisciplines[clan].includes(discipline)){
+        if(Object.keys(disBlock).includes(discipline)){
             continue;
         }
         else{
@@ -73,7 +82,7 @@ function createCharacter(attributes){
     let skillDots = [];
     let disBlock = {};
     distributeClanDisciplines(charClan, disBlock);
-    distributeRestDisciplines(charClan, disBlock);
+    distributeRestDisciplines(disBlock);
     assignAttributeDots(attributeDots, attributes, attrBlock);
     let distribution = null;
     let distDom = [...document.getElementsByName('distribution')]
@@ -168,6 +177,7 @@ function createCharacter(attributes){
     presDom.innerText = charDis['Presence'];
     protDom.innerText = charDis['Protean'];
     blooDom.innerText = charDis['Blood Sorcery'];
+    thinAlchDom.innerText = charDis['Thin-Blood Alchemy'];
 
     return character;
 }
