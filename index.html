@@ -11,7 +11,7 @@
     <h1>Character Generator:</h1>
     <h2>Instructions:</h2>
     <p>Press the "Go!" button to generate stats for a VtM V5 PC. Make sure to choose your skills distribution--specialist, balanced, or jack-of-all-trades--and clan. To save stats, press the "Save" button. More functionality to come!</p>
-    <p>Coming next: Predator Types...after I learn how to use databases (updated 5/19/2021)</p>
+    <p>Coming next: Predator Types...after I learn how to use databases (updated 5/21/2021)</p>
     <h2>Disclaimer:</h2>
     <p>I am not affiliated with White Wolf/Paradox. This is merely a fan project to practice coding and hopefully provide something of value to the VtM V5 community.</p>
     <h2>The Generator:</h2>
@@ -20,7 +20,7 @@
     <h3>Basic Info:</h3>
     <form>
         <label for='char-name'>Name or Label:</label>
-        <input type='text' autocomplete='Character' id='char-name'>
+        <input type='text' placeholder='Character' id='char-name'>
         <div>
             <span>Skills Distribution:</span>
             <label for='sp'>Specialist:</label>
@@ -31,6 +31,21 @@
             <input type='radio' name='distribution' value='jack' id='jk'>
             <label for='rd'>Random: (picked <span id='random-dist'></span>)</label>
             <input type='radio' name='distribution' value='random' id='rd'>
+        </div>
+        <div>
+            <span>Generation:</span>
+            <label for='tenth'>10th:</label>
+            <input type='radio' name='generation' value='tenth' id='tenth'>
+            <label for='eleventh'>11th:</label>
+            <input type='radio' name='generation' value='eleventh' id='eleventh'>
+            <label for='twelfth'>12th:</label>
+            <input type='radio' name='generation' value='twelfth' id='twelfth'>
+            <label for='thirteenth'>13th:</label>
+            <input type='radio' name='generation' value='thirteenth' id='thirteenth'>
+            <label for='fourteenthEtc'>14th+:</label>
+            <input type='radio' name='generation' value='fourteenthEtc' id='fourteenthEtc'>
+            <label for='random-gen'>Random: (picked <span id='shows-random-gen'></span>)</label>
+            <input type='radio' name='generation' value='random' id='random-gen'>
         </div>
         <div>
             <span>Clan:</span>
@@ -215,6 +230,10 @@
     </table>
     <h2>Saved Builds:</h2>
     <div id="saved-sheets"></div>
+    <h2>Update Log:</h2>
+    <div id="updates">
+        <p>5/21/2021: Added generation and updated the Character class (including logic regarding rules for thin-bloods and generation/Blood Potency). Also updated capitalization in the DOM.</p>
+    </div>
     <script src="domselectionandconsts.js"></script>
     <script src="classes.js"></script>
     <script src="app.js"></script>

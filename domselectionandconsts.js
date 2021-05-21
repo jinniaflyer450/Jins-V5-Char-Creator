@@ -11,8 +11,8 @@ const skills = ['Athletics', 'Animal Ken', 'Academics', 'Brawl', 'Etiquette', 'A
 let character = null;
 
 //All available clans and all available disciplines (TODO: add thin-bloods, caitiffs, and none/mortals and/or ghouls)
-const clanList = ['banu-haqim', 'brujah', 'gangrel', 'hecata', 'lasombra', 'malkavian', 'ministry', 
-                'nosferatu', 'ravnos', 'salubri', 'toreador', 'tremere', 'thin-blood', 'tzimisce', 'ventrue'];
+const clanList = ['banu-haqim', 'brujah', 'caitiff', 'gangrel', 'hecata', 'lasombra', 'malkavian', 'ministry', 
+                'nosferatu', 'ravnos', 'salubri', 'toreador', 'tremere', 'tzimisce', 'ventrue', 'thin-blood'];
 const allNormalDisciplines = ['Animalism', 'Auspex', 'Celerity', 'Dominate', 'Fortitude', 'Obfuscate', 
                             'Oblivion', 'Potence', 'Presence', 'Protean', 'Blood Sorcery'];
 
@@ -100,6 +100,15 @@ let protDom = document.querySelector('#protean');
 let blooDom = document.querySelector('#blood-sorcery');
 let thinAlchDom = document.querySelector('#thin-blood-alchemy');
 
+//The radio buttons in the DOM that allow for selection of generation.
+let tenthDom = document.querySelector('#tenth');
+let eleventhDom = document.querySelector('#eleventh');
+let twelfthDom = document.querySelector('#twelfth');
+let thirteenthDom = document.querySelector('#thirteenth');
+let fourteenthEtcDom = document.querySelector('#fourteenthEtc');
+let randomGenSelect = document.querySelector('#random-gen')
+
 //The areas where randomly picked clans and skill dot distributions are shown (if the user randomized them) after the app runs.
 let randomClan = document.querySelector('#random-clan');
 let randomDist = document.querySelector('#random-dist');
+let randomGen = document.querySelector('#shows-random-gen');

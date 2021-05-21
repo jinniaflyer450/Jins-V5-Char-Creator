@@ -39,10 +39,24 @@ function distributeClanDisciplines(clan, disBlock){
     assignAttributeDots(clanDisDots, clanDisciplines[clan], disBlock);
 }
 
+/*The function that capitalizes/title-cases a string.*/
+function capitalizeString(string){
+    let capitalizedString = '';
+    for(let index = 0; index < string.length; index++){
+        if(index === 0 || string[index - 1] === ' ' || string[index - 1] === '-'){
+            capitalizedString += string[index].toUpperCase()
+        }
+        else{
+            capitalizedString+= string[index]
+        }
+    }
+    return capitalizedString;
+}
+
 /*The function that, given a selected or randomized clan, populates the object where each key is a discipline and each value is the number
 of dots the character has in that discipline with the remaining disciplines after clan disciplines are accounted for.*/
 function distributeRestDisciplines(disBlock){
-    for(discipline of allNormalDisciplines){
+    for(discipline of ['Thin-Blood Alchemy', ...allNormalDisciplines]){
         if(Object.keys(disBlock).includes(discipline)){
             continue;
         }
@@ -57,20 +71,52 @@ function resetGenerator(){
     character = null;
 }
 
-/*The function that randomly generates a character's clan, basic attributes, skills, and disciplines based on selected options.
+/*The function that randomly generates a character's clan, generation, basic attributes, skills, and disciplines based on selected options
 and displays them in the DOM.*/
 function createCharacter(attributes){
-    const charName = nameDom.value;
+    if(nameDom.value !==''){
+        charName = nameDom.value;
+    }
+    else{
+        charName = 'Character';
+    }
+    let genDom = [...document.getElementsByName('generation')];
+    let charGen = null;
+    for(gen of genDom){
+        if(gen.checked && gen.value !== 'random'){
+            charGen = gen.value;
+        }
+        else if(gen.checked){
+            const currValIndex = Math.floor(Math.random()*(genDom.length - 1));
+            charGen = genDom[currValIndex].value;
+            randomGen.innerText = capitalizeString(charGen); 
+        }
+        else{
+            continue;
+        }
+    }
     let clanDom = [...document.getElementsByName('clan')];
     let charClan = null;
     for(clan of clanDom){
-        if(clan.checked === true && clan.value !== 'random'){
+        if(charGen ==='fourteenthEtc' && clan.checked && !(['thin-blood', 'random'].includes(clan.value))){
+            alert('Vampires of fourteenth or higher generations are typically thin-bloods.');
+            resetGenerator();
+            return;
+        }
+        else if(charGen === 'fourteenthEtc' && clan.checked && clan.value === 'random'){
+            charClan = 'thin-blood';
+            randomClan.innerText = capitalizeString(charClan);
+        }
+        else if(charGen === 'fourteenthEtc'){
+            charClan = 'thin-blood';
+        }
+        else if(clan.checked && clan.value !== 'random'){
             charClan = clan.value;
         }
-        else if(clan.checked === true){
-            const currValIndex = Math.floor(Math.random()*(clanList.length))
+        else if(clan.checked){
+            const currValIndex = Math.floor(Math.random()*(clanList.length - 1));
             charClan = clanList[currValIndex];
-            randomClan.innerText = charClan;
+            randomClan.innerText = capitalizeString(charClan);
         }
         else{
             continue;
@@ -108,12 +154,12 @@ function createCharacter(attributes){
         const currValIndex = Math.floor(Math.random()*(allDist.length))
         if(currValIndex === 0){
             distribution = 'specialist';
-            randomDist.innerText = 'Specialist';
+            randomDist.innerText = capitalizeString(distribution);
             skillDots = allDist[0];
         }
         else if(currValIndex === 1){
             distribution = 'balanced';
-            randomDist.innerText = 'Balanced';
+            randomDist.innerText = capitalizeString(distribution);
             skillDots = allDist[1];
         }
         else{
@@ -123,10 +169,14 @@ function createCharacter(attributes){
         }
     }
     assignAttributeDots(skillDots, skills, skillBlock);
-    let character = new Character(charName, charClan, attrBlock, skillBlock, disBlock);
+    let character = new Character(charClan, charGen, attrBlock, skillBlock, disBlock, charName);
     const charAttr = character.attributes;
     const charSkills = character.skills;
     const charDis = character.disciplines;
+
+    if(character.generation === 'fourteenthEtc'){
+        character.bloodPotency = 0;
+    }
 
     strDom.innerText = charAttr['Strength'];
     dexDom.innerText = charAttr['Dexterity'];
@@ -195,10 +245,17 @@ document.querySelector('#create-character').addEventListener('click', function(e
 function saveStats(){
     const savedStats = document.createElement('div');
     const savedStatsName = document.createElement('h3');
+    const savedStatsClanAndGen = document.createElement('h4')
     const savedStatsAttr = document.createElement('p');
     const savedStatsSkills = document.createElement('p');
     const savedStatsDisciplines = document.createElement('p');
     savedStatsName.innerText = `${character.name}: `
+    if(character.generation === 'fourteenthEtc'){
+        savedStatsClanAndGen.innerText = `Thin-Blood (Fourteenth, Fifteenth, or Sixteenth Generation)`
+    }
+    else{
+        savedStatsClanAndGen.innerText = `${capitalizeString(character.generation)} Generation ${capitalizeString(character.clan)}`
+    }
     savedStatsAttr.innerText = `Attributes: `
     savedStatsSkills.innerText = `Skills: `
     savedStatsDisciplines.innerText = `Disciplines: `
@@ -226,6 +283,7 @@ function saveStats(){
     savedStatsDisciplines.innerText.length--;
     savedStats.classList.add('saved-stats');
     savedStats.append(savedStatsName);
+    savedStats.append(savedStatsClanAndGen);
     savedStats.append(savedStatsAttr);
     savedStats.append(savedStatsSkills);
     savedStats.append(savedStatsDisciplines);
