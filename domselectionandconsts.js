@@ -10,8 +10,11 @@ const skills = ['Athletics', 'Animal Ken', 'Academics', 'Brawl', 'Etiquette', 'A
 //Container for the completed character.
 let character = null;
 
-//All available clans, all available disciplines, and all available generations. 
+//All available distributions, all available clans, all available disciplines, and all available generations. 
 //(TODO: add none/mortals and/or ghouls)
+let distributionList = [[4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                        [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                        [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]];
 const clanList = ['banu-haqim', 'brujah', 'caitiff', 'gangrel', 'hecata', 'lasombra', 'malkavian', 'ministry', 
                 'nosferatu', 'ravnos', 'salubri', 'toreador', 'tremere', 'tzimisce', 'ventrue', 'thin-blood'];
 const allNormalDisciplines = ['Animalism', 'Auspex', 'Celerity', 'Dominate', 'Fortitude', 'Obfuscate', 

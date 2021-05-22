@@ -115,10 +115,10 @@ function createCharacter(attributes){
     }
     let possCharClanAndRandom = pickValueFromDom(document.getElementsByName('clan'), clanList);
     let charClan = possCharClanAndRandom['possibleStorageVariable'];
-    let isRandomClan = possCharClanAndRandom['isRandom'];
+    const isRandomClan = possCharClanAndRandom['isRandom'];
     let possCharGenAndRandom = pickValueFromDom(document.getElementsByName('generation'), generations);
     let charGen = possCharGenAndRandom['possibleStorageVariable'];
-    let isRandomGen = possCharGenAndRandom['isRandom'];
+    const isRandomGen = possCharGenAndRandom['isRandom'];
     if((charGen !== 'fourteenthEtc' && charClan === 'thin-blood') || (charGen === 'fourteenthEtc' && charClan !== 'thin-blood')){
         if(isRandomClan && isRandomGen && charGen === 'fourteenthEtc'){
             while(charGen === 'fourteenthEtc'){
@@ -172,31 +172,30 @@ function createCharacter(attributes){
         }
     }
     if(distribution === 'specialist'){
-        skillDots = [4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        skillDots = distributionList[0];
     }
     else if(distribution === 'balanced'){
-        skillDots = [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        skillDots = distributionList[1];
     }
     else if(distribution === 'jack'){
-        skillDots = [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+        skillDots = distributionList[2];
     }
     else{
-        let allDist = [[4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]]
-        const currValIndex = Math.floor(Math.random()*(allDist.length))
+        const currValIndex = Math.floor(Math.random()*(distributionList.length))
         if(currValIndex === 0){
             distribution = 'specialist';
             randomDist.innerText = `(picked ${capitalizeString(distribution)})`;
-            skillDots = allDist[0];
+            skillDots = distributionList[0];
         }
         else if(currValIndex === 1){
             distribution = 'balanced';
             randomDist.innerText = `(picked ${capitalizeString(distribution)})`;
-            skillDots = allDist[1];
+            skillDots = distributionList[1];
         }
         else{
             distribution = 'jack'
             randomDist.innerText = '(picked Jack-of-all-Trades)';
-            skillDots = allDist[2];
+            skillDots = distributionList[2];
         }
     }
     assignAttributeDots(skillDots, skills, skillBlock);
@@ -276,20 +275,26 @@ document.querySelector('#create-character').addEventListener('click', function(e
 function saveStats(){
     const savedStats = document.createElement('div');
     const savedStatsName = document.createElement('h3');
-    const savedStatsClanAndGen = document.createElement('h4')
+    const savedStatsBasicInfo = document.createElement('h4')
     const savedStatsAttr = document.createElement('p');
     const savedStatsSkills = document.createElement('p');
     const savedStatsDisciplines = document.createElement('p');
     savedStatsName.innerText = `${character.name}: `
     if(character.generation === 'fourteenthEtc'){
-        savedStatsClanAndGen.innerText = `Thin-Blood (Fourteenth, Fifteenth, or Sixteenth Generation)`
+        savedStatsBasicInfo.innerText = `Thin-Blood (Fourteenth, Fifteenth, or Sixteenth Generation; Blood Potency 0)`
     }
     else{
-        savedStatsClanAndGen.innerText = `${capitalizeString(character.generation)} Generation ${capitalizeString(character.clan)}`
+        savedStatsBasicInfo.innerText = 
+        `${capitalizeString(character.generation)} Generation ${capitalizeString(character.clan)}; Blood Potency ${character.bloodPotency}`
     }
     savedStatsAttr.innerText = `Attributes: `
     savedStatsSkills.innerText = `Skills: `
-    savedStatsDisciplines.innerText = `Disciplines: `
+    if(character.generation === 'fourteenthEtc'){
+        savedStatsDisciplines.innerText = '';
+    }
+    else{
+        savedStatsDisciplines.innerText = `Disciplines: `
+    }
     for(let [key, value] of Object.entries(character.attributes)){
         savedStatsAttr.innerText += `${key} ${value} `
     }
@@ -314,7 +319,7 @@ function saveStats(){
     savedStatsDisciplines.innerText.length--;
     savedStats.classList.add('saved-stats');
     savedStats.append(savedStatsName);
-    savedStats.append(savedStatsClanAndGen);
+    savedStats.append(savedStatsBasicInfo);
     savedStats.append(savedStatsAttr);
     savedStats.append(savedStatsSkills);
     savedStats.append(savedStatsDisciplines);
