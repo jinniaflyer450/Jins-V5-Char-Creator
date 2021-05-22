@@ -69,6 +69,9 @@ function distributeRestDisciplines(disBlock){
 //The function that resets the generator after each use so that it may be used again.
 function resetGenerator(){
     character = null;
+    distributionList = [[4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                        [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+                        [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]];
     randomClan.innerText = '';
     randomDist.innerText = '';
     randomGen.innerText = '';
