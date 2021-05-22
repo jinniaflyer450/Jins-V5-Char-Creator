@@ -71,6 +71,36 @@ function resetGenerator(){
     character = null;
 }
 
+
+//The function that shows a conflict in generation and clan status if it exists.
+function generationConflictAlert(){
+    alert('Thin-bloods are always of 14th gen or higher. Characters of 14th gen or higher are typically thin-bloods.');
+    resetGenerator();
+    return;
+}
+
+
+//The function that extracts the checked value from a list of DOM elements and returns it, accounting for random values.
+function pickValueFromDom(domValues, staticValues){
+    let usableDomValues = [...domValues];
+    let possibleStorageVariable = null;
+    let isRandom = null;
+    for(item of usableDomValues){
+        if(item.checked && item.value !== 'random'){
+            possibleStorageVariable = item.value;
+            isRandom = false;
+        }
+        else if(item.checked){
+            possibleStorageVariable = staticValues[Math.floor(Math.random()*staticValues.length)];
+            isRandom = true;
+        }
+        else{
+            continue;
+        }
+    }
+    return {possibleStorageVariable, isRandom}; 
+}
+
 /*The function that randomly generates a character's clan, generation, basic attributes, skills, and disciplines based on selected options
 and displays them in the DOM.*/
 function createCharacter(attributes){
@@ -80,47 +110,45 @@ function createCharacter(attributes){
     else{
         charName = 'Character';
     }
-    let genDom = [...document.getElementsByName('generation')];
-    let charGen = null;
-    for(gen of genDom){
-        if(gen.checked && gen.value !== 'random'){
-            charGen = gen.value;
+    let possCharClanAndRandom = pickValueFromDom(document.getElementsByName('clan'), clanList);
+    let charClan = possCharClanAndRandom['possibleStorageVariable'];
+    let isRandomClan = possCharClanAndRandom['isRandom'];
+    let possCharGenAndRandom = pickValueFromDom(document.getElementsByName('generation'), generations);
+    let charGen = possCharGenAndRandom['possibleStorageVariable'];
+    let isRandomGen = possCharGenAndRandom['isRandom'];
+    if((charGen !== 'fourteenthEtc' && charClan === 'thin-blood') || (charGen === 'fourteenthEtc' && charClan !== 'thin-blood')){
+        if(isRandomClan && isRandomGen && charGen === 'fourteenthEtc'){
+            while(charGen === 'fourteenthEtc'){
+                charGen = pickValueFromDom(document.getElementsByName('generation'), generations)['possibleStorageVariable'];
+            }
         }
-        else if(gen.checked){
-            const currValIndex = Math.floor(Math.random()*(genDom.length - 1));
-            charGen = genDom[currValIndex].value;
-            randomGen.innerText = capitalizeString(charGen); 
+        else if(isRandomClan && isRandomGen){
+            charGen = 'fourteenthEtc';
+        }
+        else if(isRandomClan && isRandomGen === false && charGen !== 'fourteenthEtc'){
+            while(charClan === 'thin-blood'){
+                charClan = pickValueFromDom(document.getElementsByName('clan'), clanList)['possibleStorageVariable'];
+            }
+        }
+        else if(isRandomClan && isRandomGen === false){
+            charClan = 'thin-blood';
+        }
+        else if(isRandomGen && isRandomClan === false && charClan === 'thin-blood'){
+            charGen = 'fourteenthEtc';
+        }
+        else if(isRandomGen && isRandomClan === false){
+            charGen = pickValueFromDom(document.getElementsByName('generation'), generations)['possibleStorageVariable'];
         }
         else{
-            continue;
-        }
-    }
-    let clanDom = [...document.getElementsByName('clan')];
-    let charClan = null;
-    for(clan of clanDom){
-        if(charGen ==='fourteenthEtc' && clan.checked && !(['thin-blood', 'random'].includes(clan.value))){
-            alert('Vampires of fourteenth or higher generations are typically thin-bloods.');
-            resetGenerator();
+            generationConflictAlert();
             return;
         }
-        else if(charGen === 'fourteenthEtc' && clan.checked && clan.value === 'random'){
-            charClan = 'thin-blood';
-            randomClan.innerText = capitalizeString(charClan);
-        }
-        else if(charGen === 'fourteenthEtc'){
-            charClan = 'thin-blood';
-        }
-        else if(clan.checked && clan.value !== 'random'){
-            charClan = clan.value;
-        }
-        else if(clan.checked){
-            const currValIndex = Math.floor(Math.random()*(clanList.length - 1));
-            charClan = clanList[currValIndex];
-            randomClan.innerText = capitalizeString(charClan);
-        }
-        else{
-            continue;
-        }
+    }
+    if(isRandomClan){
+        randomClan.innerText = charClan;
+    }
+    if(isRandomGen){
+        randomGen.innerText = charGen;
     }
     let attributeDots = [4, 3, 3, 3, 2, 2, 2, 2, 1];
     let attrBlock = {};
