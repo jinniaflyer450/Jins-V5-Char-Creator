@@ -110,25 +110,33 @@ function pickValueFromDom(domValues, staticValues){
 /*The function that randomly generates a character's clan, generation, basic attributes, skills, and disciplines based on selected options
 and displays them in the DOM.*/
 function createCharacter(attributes){
+    //Selects either the name given in the relevant input or names the character the placeholder "Character".
     if(nameDom.value !==''){
         charName = nameDom.value;
     }
     else{
         charName = 'Character';
     }
+    //Selects a clan value and keeps a note of if it was generated randomly or not.
     let possCharClanAndRandom = pickValueFromDom(document.getElementsByName('clan'), clanList);
+    //Stores the generated clan value and note of randomness in variables.
     let charClan = possCharClanAndRandom['possibleStorageVariable'];
     const isRandomClan = possCharClanAndRandom['isRandom'];
+    //Selects a generation value and keeps a note of if it was generated randomly or not.
     let possCharGenAndRandom = pickValueFromDom(document.getElementsByName('generation'), generations);
+    //Stores the generated generation value and note of randomness in variables.
     let charGen = possCharGenAndRandom['possibleStorageVariable'];
     const isRandomGen = possCharGenAndRandom['isRandom'];
+    /*Accounts and modifies for possible generation and clan conflicts (thin-bloods are 14th+ gen and 14th+ gen are thin-bloods) unless 
+    two conflicting options are both intentionally selected, in which case the app informs you of your mistake and stops character
+    creation.*/
     if((charGen !== 'fourteenthEtc' && charClan === 'thin-blood') || (charGen === 'fourteenthEtc' && charClan !== 'thin-blood')){
-        if(isRandomClan && isRandomGen && charGen === 'fourteenthEtc'){
+        if(isRandomClan && isRandomGen && charGen === 'fourteenthEtc' || (isRandomGen && isRandomClan === false)){
             while(charGen === 'fourteenthEtc'){
                 charGen = pickValueFromDom(document.getElementsByName('generation'), generations)['possibleStorageVariable'];
             }
         }
-        else if(isRandomClan && isRandomGen){
+        else if(isRandomClan && isRandomGen || (isRandomGen && isRandomClan === false && charClan === 'thin-blood')){
             charGen = 'fourteenthEtc';
         }
         else if(isRandomClan && isRandomGen === false && charGen !== 'fourteenthEtc'){
@@ -139,78 +147,64 @@ function createCharacter(attributes){
         else if(isRandomClan && isRandomGen === false){
             charClan = 'thin-blood';
         }
-        else if(isRandomGen && isRandomClan === false && charClan === 'thin-blood'){
-            charGen = 'fourteenthEtc';
-        }
-        else if(isRandomGen && isRandomClan === false){
-            charGen = pickValueFromDom(document.getElementsByName('generation'), generations)['possibleStorageVariable'];
-        }
         else{
             generationConflictAlert();
             return;
         }
     }
+    //If clan or generation are randomly generated, shows the randomly generated value in the DOM.
     if(isRandomClan){
         randomClan.innerText = `(picked ${charClan})`;
     }
     if(isRandomGen){
         randomGen.innerText = `(picked ${charGen})`;
     }
+    //Sets up needed global variables.
     let attributeDots = [4, 3, 3, 3, 2, 2, 2, 2, 1];
     let attrBlock = {};
     let skillBlock = {};
     let skillDots = [];
     let disBlock = {};
+    //Distributes dots in disciplines.
     distributeClanDisciplines(charClan, disBlock);
     distributeRestDisciplines(disBlock);
+    //Distributes attribute dots.
     assignAttributeDots(attributeDots, attributes, attrBlock);
-    let distribution = null;
-    let distDom = [...document.getElementsByName('distribution')]
-    for(distOption of distDom){
-        if(distOption.checked === true){
-            distribution = distOption.value;
-        }
-        else{
-            continue;
-        }
-    }
+    /*Retrieves selected or randomly-generated distribution, then selects skill dot pool based on that distribution 
+    and updates selection in the DOM.*/
+    let distributionAndRandom = pickValueFromDom(document.getElementsByName('distribution'), distributions);
+    let distribution = distributionAndRandom['possibleStorageVariable'];
+    let isRandomDistribution = distributionAndRandom['isRandom'];
     if(distribution === 'specialist'){
-        skillDots = distributionList[0];
+        skillDots = distributionList[0]; 
     }
     else if(distribution === 'balanced'){
         skillDots = distributionList[1];
     }
-    else if(distribution === 'jack'){
+    else{
         skillDots = distributionList[2];
     }
-    else{
-        const currValIndex = Math.floor(Math.random()*(distributionList.length))
-        if(currValIndex === 0){
-            distribution = 'specialist';
-            randomDist.innerText = `(picked ${capitalizeString(distribution)})`;
-            skillDots = distributionList[0];
-        }
-        else if(currValIndex === 1){
-            distribution = 'balanced';
-            randomDist.innerText = `(picked ${capitalizeString(distribution)})`;
-            skillDots = distributionList[1];
-        }
-        else{
-            distribution = 'jack'
-            randomDist.innerText = '(picked Jack-of-all-Trades)';
-            skillDots = distributionList[2];
-        }
+    if(isRandomDistribution && distribution === 'jack'){
+        randomDist.innerText = 'picked Jack-of-all-Trades'
     }
+    else if(isRandomDistribution){
+        randomDist.innerText = `(picked ${capitalizeString(distribution)})`
+    }
+    /*Distributes skill dots*/
     assignAttributeDots(skillDots, skills, skillBlock);
+    /*Stores data to a single character object.*/
     let character = new Character(charClan, charGen, attrBlock, skillBlock, disBlock, charName);
+    /*Selects properties of the character object to shorten DOM selection later.*/
     const charAttr = character.attributes;
     const charSkills = character.skills;
     const charDis = character.disciplines;
 
+    //Adjusts blood potency value for thin-blooded characters.
     if(character.generation === 'fourteenthEtc'){
         character.bloodPotency = 0;
     }
 
+    //Updates the DOM to reflect attribute, skill, and discipline values.
     strDom.innerText = charAttr['Strength'];
     dexDom.innerText = charAttr['Dexterity'];
     stmDom.innerText = charAttr['Stamina'];

@@ -19,7 +19,8 @@ const clanList = ['banu-haqim', 'brujah', 'caitiff', 'gangrel', 'hecata', 'lasom
                 'nosferatu', 'ravnos', 'salubri', 'toreador', 'tremere', 'tzimisce', 'ventrue', 'thin-blood'];
 const allNormalDisciplines = ['Animalism', 'Auspex', 'Celerity', 'Dominate', 'Fortitude', 'Obfuscate', 
                             'Oblivion', 'Potence', 'Presence', 'Protean', 'Blood Sorcery'];
-const generations = ['tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenthEtc']; 
+const generations = ['tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenthEtc'];
+const distributions = ['specialist', 'balanced', 'jack']; 
 
 //Clans matched to their clan disciplines.
 const banuHaqimDis = ['Blood Sorcery', 'Celerity', 'Obfuscate'];
