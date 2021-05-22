@@ -69,6 +69,9 @@ function distributeRestDisciplines(disBlock){
 //The function that resets the generator after each use so that it may be used again.
 function resetGenerator(){
     character = null;
+    randomClan.innerText = '';
+    randomDist.innerText = '';
+    randomGen.innerText = '';
 }
 
 
@@ -145,10 +148,10 @@ function createCharacter(attributes){
         }
     }
     if(isRandomClan){
-        randomClan.innerText = charClan;
+        randomClan.innerText = `(picked ${charClan})`;
     }
     if(isRandomGen){
-        randomGen.innerText = charGen;
+        randomGen.innerText = `(picked ${charGen})`;
     }
     let attributeDots = [4, 3, 3, 3, 2, 2, 2, 2, 1];
     let attrBlock = {};
@@ -182,17 +185,17 @@ function createCharacter(attributes){
         const currValIndex = Math.floor(Math.random()*(allDist.length))
         if(currValIndex === 0){
             distribution = 'specialist';
-            randomDist.innerText = capitalizeString(distribution);
+            randomDist.innerText = `(picked ${capitalizeString(distribution)})`;
             skillDots = allDist[0];
         }
         else if(currValIndex === 1){
             distribution = 'balanced';
-            randomDist.innerText = capitalizeString(distribution);
+            randomDist.innerText = `(picked ${capitalizeString(distribution)})`;
             skillDots = allDist[1];
         }
         else{
             distribution = 'jack'
-            randomDist.innerText = 'Jack-of-all-Trades';
+            randomDist.innerText = '(picked Jack-of-all-Trades)';
             skillDots = allDist[2];
         }
     }
