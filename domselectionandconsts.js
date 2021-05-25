@@ -10,7 +10,7 @@ const skills = ['Athletics', 'Animal Ken', 'Academics', 'Brawl', 'Etiquette', 'A
 //Container for the completed character.
 let character = null;
 
-//All available distributions, all available clans, all available disciplines, and all available generations. 
+//All available distributions, all available clans, all available disciplines, all available generations, and all available predator types. 
 //(TODO: add none/mortals and/or ghouls)
 let distributionList = [[4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
                         [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
@@ -21,6 +21,7 @@ const allNormalDisciplines = ['Animalism', 'Auspex', 'Celerity', 'Dominate', 'Fo
                             'Oblivion', 'Potence', 'Presence', 'Protean', 'Blood Sorcery'];
 const generations = ['tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenthEtc'];
 const distributions = ['specialist', 'balanced', 'jack']; 
+const predTypes = ['Alleycat', 'Bagger', 'Blood-Leech', 'Cleaver', 'Consensualist', 'Farmer', 'Osiris', 'Sandman', 'Scene Queen', 'Siren'];
 
 //Clans matched to their clan disciplines.
 const banuHaqimDis = ['Blood Sorcery', 'Celerity', 'Obfuscate'];
@@ -49,8 +50,30 @@ const clanDisciplines = {
     'ventrue': venDis
 }
 
+//A single object containing predator types matched to their predator type disciplines.
+
+const predDisciplines = {
+    'Alleycat': ['Celerity', 'Potence'], 'Bagger': ['Blood Sorcery', 'Obfuscate'], 'Blood-Leech': ['Celerity', 'Protean'],
+    'Cleaver': ['Dominate', 'Animalism'], 'Consensualist': ['Auspex', 'Fortitude'], 'Farmer': ['Animalism', 'Protean'],
+    'Osiris': ['Blood Sorcery', 'Presence'], 'Sandman': ['Auspex', 'Obfuscate'], 'Scene Queen': ['Dominate', 'Potence'],
+    'Siren': ['Fortitude', 'Presence']
+}
+
+//A single object containing specialties matched to their predator type disciplines.
+const predSpecialties = {
+    'Alleycat': {'Intimidation': '(stickups)', 'Brawl': '(grappling)'}, 'Bagger': {'Larceny': '(lockpicking)', 'Streetwise': '(black market)'},
+    'Blood-Leech': {'Brawl': '(Kindred)', 'Stealth': '(against Kindred)'}, 'Cleaver': {'Persuasion': '(gaslighting)', 'Subterfuge': '(coverups)'},
+    'Consensualist': {'Medicine': '(phlebotomy)', 'Persuasion': '(victims)'}, 'Farmer': {'Animal Ken': '(your animal)', 'Survival': '(hunting)'},
+    'Osiris': {'Occult': '(your tradition)', 'Performance': '(your entertainment field)'}, 'Sandman': {'Medicine': '(anesthetics)', 'Stealth': '(break-in)'}, 
+    'Scene Queen': {'Etiquette': '(your scene)', 'Leadership': '(your scene)', 'Streetwise': '(your scene)'}, 
+    'Siren': {'Persuasion': '(seduction)', 'Subterfuge': '(seduction)'}
+}
+
 //The input in the DOM that allows users to enter a name or label.
 let nameDom = document.querySelector('#char-name');
+
+//The span that displays a character's humanity in the DOM.
+let humDom = document.querySelector('#humanity');
 
 //The table cells in the DOM that contain basic character attribute dot values after the app runs.
 let strDom = document.querySelector('#str');
@@ -112,9 +135,10 @@ let eleventhDom = document.querySelector('#eleventh');
 let twelfthDom = document.querySelector('#twelfth');
 let thirteenthDom = document.querySelector('#thirteenth');
 let fourteenthEtcDom = document.querySelector('#fourteenthEtc');
-let randomGenSelect = document.querySelector('#random-gen')
+let randomGenSelect = document.querySelector('#random-gen');
 
 //The areas where randomly picked clans and skill dot distributions are shown (if the user randomized them) after the app runs.
 let randomClan = document.querySelector('#random-clan');
 let randomDist = document.querySelector('#random-dist');
 let randomGen = document.querySelector('#shows-random-gen');
+let randomPred = document.querySelector('#shows-pred-type');

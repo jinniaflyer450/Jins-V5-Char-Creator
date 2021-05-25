@@ -1,5 +1,10 @@
 //This app randomly generates player characters or Storyteller player characters for Vampire: the Masquerade version 5.
 
+//A function that chooses randomly between multiple choices.
+function randomChoice(choices){
+    return choices[Math.floor(Math.random()*choices.length)];
+}
+
 /*The function that, given an array of dot values, chooses a random index within that array, takes the value at that index, 
 removes the value at that index, and returns the value that was at that index.*/
 function randomizeAttributeDots(dotsGroup){
@@ -75,6 +80,7 @@ function resetGenerator(){
     randomClan.innerText = '';
     randomDist.innerText = '';
     randomGen.innerText = '';
+    randomPred.innerText = '';
 }
 
 
@@ -85,6 +91,12 @@ function generationConflictAlert(){
     return;
 }
 
+//The function that shows a conflict in predator type and clan if it exists.
+function predTypeConflictAlert(){
+    alert('Ventrue cannot have the Farmer or Bagger predator type.');
+    resetGenerator();
+    return;
+}
 
 //The function that extracts the checked value from a list of DOM elements and returns it, accounting for random values.
 function pickValueFromDom(domValues, staticValues){
@@ -97,7 +109,7 @@ function pickValueFromDom(domValues, staticValues){
             isRandom = false;
         }
         else if(item.checked){
-            possibleStorageVariable = staticValues[Math.floor(Math.random()*staticValues.length)];
+            possibleStorageVariable = randomChoice(staticValues);
             isRandom = true;
         }
         else{
@@ -106,6 +118,33 @@ function pickValueFromDom(domValues, staticValues){
     }
     return {possibleStorageVariable, isRandom}; 
 }
+
+//A function that checks an attribute that could possibly be a problem against a list of attributes that would be a problem and an
+//attribute key and value that is going to be retained no matter what. If the attribute is a problem, a new attribute will be selected from the relevant
+//array.
+function checkAgainst(possibleOffendingAttribute, constantOffendingAttributes, constantRetainedAttributeValue, 
+    possConstantRetainedAttributeValues, constantListToSelectNewAttribute){
+    if(constantOffendingAttributes.includes(possibleOffendingAttribute) && 
+    possConstantRetainedAttributeValues.includes(constantRetainedAttributeValue)){
+        while(constantOffendingAttributes.includes(possibleOffendingAttribute)){
+            possibleOffendingAttribute = randomChoice(constantListToSelectNewAttribute);
+        }
+    }
+    return possibleOffendingAttribute;
+}
+
+
+//A function that works similarly to checkAgainst, except that the retained attribute key and value must match rather than not match.
+function checkFor(possibleOffendingAttribute, constantOffendingAttributes, constantRetainedAttributeValue, possConstantRetainedAttributeValues, 
+    constantListToSelectNewAttribute){
+        if(constantOffendingAttributes.includes(possibleOffendingAttribute) && 
+        !(possConstantRetainedAttributeValues.includes(constantRetainedAttributeValue))){
+            while((constantOffendingAttributes.includes(possibleOffendingAttribute))){
+                possibleOffendingAttribute = randomChoice(constantListToSelectNewAttribute);
+            }
+        }
+        return possibleOffendingAttribute;
+    }
 
 /*The function that randomly generates a character's clan, generation, basic attributes, skills, and disciplines based on selected options
 and displays them in the DOM.*/
@@ -192,19 +231,85 @@ function createCharacter(attributes){
     }
     /*Distributes skill dots*/
     assignAttributeDots(skillDots, skills, skillBlock);
+    //Assigns predator type.
+    charPred = capitalizeString(pickValueFromDom(document.getElementsByName('pred-type'), predTypes)['possibleStorageVariable']);
+    isRandomPred = pickValueFromDom(document.getElementsByName('pred-type'), predTypes)['isRandom'];
+    //Makes sure Ventrue do not wind up with Bagger or Farmer.
+    if(isRandomPred){
+        charPred = capitalizeString(checkAgainst(charPred, ['Bagger', 'Farmer'], charClan, ['ventrue'], predTypes));
+    }
+    else if(charClan === 'ventrue' && ['Bagger', 'Farmer'].includes(charPred) && isRandomClan){
+        while(charClan === 'ventrue'){
+            charClan = pickValueFromDom(document.getElementsByName('clan'), clanList)['possibleStorageVariable'];
+        }
+    }
+    else if(charClan === 'ventrue' && ['Bagger', 'Farmer'].includes(charPred)){
+        predTypeConflictAlert();
+    }
+    //Adjusts disciplines for various predator types, making sure that only Tremere and Banu Haqim get Blood Sorcery.
+    charPredDiscipline = randomChoice(predDisciplines[charPred]);
+    charPredDiscipline = checkFor(charPredDiscipline, ['Blood Sorcery'], charClan, ['tremere', 'banu-haqim'], 
+    predDisciplines[charPred]);
+
+    //Shows predator type if chosen randomly.
+    if(isRandomPred){
+        randomPred.innerText = `(picked ${charPred})`;
+    }
+    //Adjusts specialties for various predator types, makes sure to choose either specialty or one dot in a skill, and 
+    //fills in nonexistent specialties.
+    const possibleSpecialties = predSpecialties[charPred];
+    const specialtyChoice = randomChoice(Object.keys(possibleSpecialties));
+    let specialties = {};
+    if(skillBlock[specialtyChoice] === 0){
+        skillBlock[specialtyChoice]++
+    }
+    else{
+        specialties[specialtyChoice] = possibleSpecialties[specialtyChoice];
+    }
+    for(skill of skills){
+        if(Object.keys(specialties).includes(skill)){
+            continue;
+        }
+        else{
+            specialties[skill] = '';
+        }
+    }
     /*Stores data to a single character object.*/
-    let character = new Character(charClan, charGen, attrBlock, skillBlock, disBlock, charName);
+    let character = new Character(charClan, charGen, attrBlock, skillBlock, disBlock, charPred, specialties, charName);
     /*Selects properties of the character object to shorten DOM selection later.*/
     const charAttr = character.attributes;
     const charSkills = character.skills;
     const charDis = character.disciplines;
+    const charSpec = character.specialties;
+    if(character.clan !== 'thin-blood'){
+        charDis[charPredDiscipline]++;
+    }
+
+    //Adjusts humanity for ancilla-level characters.
+    if(character.generation === 'tenth' || character.generation === 'eleventh'){
+        character.humanity--;
+    }
+    //Adjusts humanity for various predator types.
+    if(['Alleycat', 'Blood-Leech'].includes(character.predatorType)){
+        character.humanity--;
+    }
+    else if(['Farmer', 'Consensualist'].includes(character.predatorType)){
+        character.humanity++;
+    }
+
+    //Adjusts Blood Potency for various predator types.
+    if(['Blood-Leech'].includes(character.predatorType)){
+        character.bloodPotency++;
+    }
 
     //Adjusts blood potency value for thin-blooded characters.
     if(character.generation === 'fourteenthEtc'){
         character.bloodPotency = 0;
     }
 
-    //Updates the DOM to reflect attribute, skill, and discipline values.
+    //Updates the DOM to reflect humanity, attribute, skill, specialty, and discipline values.
+    humDom.innerText = character.humanity;
+
     strDom.innerText = charAttr['Strength'];
     dexDom.innerText = charAttr['Dexterity'];
     stmDom.innerText = charAttr['Stamina'];
@@ -215,33 +320,33 @@ function createCharacter(attributes){
     witDom.innerText = charAttr['Wits'];
     rsvDom.innerText = charAttr['Resolve'];
 
-    atDom.innerText = charSkills['Athletics'];
-    akDom.innerText = charSkills['Animal Ken'];
-    acDom.innerText = charSkills['Academics'];
-    brDom.innerText = charSkills['Brawl'];
-    eqDom.innerText = charSkills['Etiquette'];
-    awDom.innerText = charSkills['Awareness'];
-    crDom.innerText = charSkills['Craft'];
-    isDom.innerText = charSkills['Insight'];
-    fcDom.innerText = charSkills['Finance'];
-    drDom.innerText = charSkills['Drive'];
-    itDom.innerText = charSkills['Intimidation'];
-    ivDom.innerText = charSkills['Investigation'];
-    faDom.innerText = charSkills['Firearms'];
-    ldDom.innerText = charSkills['Leadership'];
-    mdDom.innerText = charSkills['Medicine'];
-    lcDom.innerText = charSkills['Larceny'];
-    pfDom.innerText = charSkills['Performance'];
-    ocDom.innerText = charSkills['Occult'];
-    mlDom.innerText = charSkills['Melee'];
-    psDom.innerText = charSkills['Persuasion'];
-    poDom.innerText = charSkills['Politics'];
-    shDom.innerText = charSkills['Stealth'];
-    swDom.innerText = charSkills['Streetwise'];
-    scDom.innerText = charSkills['Science'];
-    svDom.innerText = charSkills['Survival'];
-    sbDom.innerText = charSkills['Subterfuge'];
-    tcDom.innerText = charSkills['Technology'];
+    atDom.innerText = `${charSkills['Athletics']} ${charSpec['Athletics']}`;
+    akDom.innerText = `${charSkills['Animal Ken']} ${charSpec['Animal Ken']}`;
+    acDom.innerText = `${charSkills['Academics']} ${charSpec['Academics']}`;
+    brDom.innerText = `${charSkills['Brawl']} ${charSpec['Brawl']}`;
+    eqDom.innerText = `${charSkills['Etiquette']} ${charSpec['Etiquette']}`;
+    awDom.innerText = `${charSkills['Awareness']} ${charSpec['Awareness']}`;
+    crDom.innerText = `${charSkills['Craft']} ${charSpec['Craft']}`;
+    isDom.innerText = `${charSkills['Insight']} ${charSpec['Insight']}`;
+    fcDom.innerText = `${charSkills['Finance']} ${charSpec['Finance']}`;
+    drDom.innerText = `${charSkills['Drive']} ${charSpec['Drive']}`;
+    itDom.innerText = `${charSkills['Intimidation']} ${charSpec['Intimidation']}`;
+    ivDom.innerText = `${charSkills['Investigation']} ${charSpec['Investigation']}`;
+    faDom.innerText = `${charSkills['Firearms']} ${charSpec['Firearms']}`;
+    ldDom.innerText = `${charSkills['Leadership']} ${charSpec['Leadership']}`;
+    mdDom.innerText = `${charSkills['Medicine']} ${charSpec['Medicine']}`;
+    lcDom.innerText = `${charSkills['Larceny']} ${charSpec['Larceny']}`;
+    pfDom.innerText = `${charSkills['Performance']} ${charSpec['Performance']}`;
+    ocDom.innerText = `${charSkills['Occult']} ${charSpec['Occult']}`;
+    mlDom.innerText = `${charSkills['Melee']} ${charSpec['Melee']}`;
+    psDom.innerText = `${charSkills['Persuasion']} ${charSpec['Persuasion']}`;
+    poDom.innerText = `${charSkills['Politics']} ${charSpec['Politics']}`;
+    shDom.innerText = `${charSkills['Stealth']} ${charSpec['Stealth']}`;
+    swDom.innerText = `${charSkills['Streetwise']} ${charSpec['Streetwise']}`;
+    scDom.innerText = `${charSkills['Science']} ${charSpec['Science']}`;
+    svDom.innerText = `${charSkills['Survival']} ${charSpec['Survival']}`;
+    sbDom.innerText = `${charSkills['Subterfuge']} ${charSpec['Subterfuge']}`;
+    tcDom.innerText = `${charSkills['Technology']} ${charSpec['Technology']}`;
 
     animDom.innerText = charDis['Animalism'];
     auspDom.innerText = charDis['Auspex'];
@@ -282,7 +387,7 @@ function saveStats(){
     }
     else{
         savedStatsBasicInfo.innerText = 
-        `${capitalizeString(character.generation)} Generation ${capitalizeString(character.clan)}; Blood Potency ${character.bloodPotency}`
+        `${capitalizeString(character.generation)} Generation ${capitalizeString(character.clan)}; Blood Potency ${character.bloodPotency}; Humanity ${character.humanity}`
     }
     savedStatsAttr.innerText = `Attributes: `
     savedStatsSkills.innerText = `Skills: `
@@ -297,7 +402,7 @@ function saveStats(){
     }
     for(let [key, value] of Object.entries(character.skills)){
         if(value !== 0){
-            savedStatsSkills.innerText += `${key} ${value} `
+            savedStatsSkills.innerText += `${key} ${value} ${character.specialties[key]} `
         }
         else{
             continue;

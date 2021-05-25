@@ -11,7 +11,7 @@
     <h1>Character Generator:</h1>
     <h2>Instructions:</h2>
     <p>Press the "Go!" button to generate stats for a VtM V5 PC. Make sure to choose your skills distribution--specialist, balanced, or jack-of-all-trades--and clan. To save stats, press the "Save" button. More functionality to come!</p>
-    <p>Coming next: Predator Types...after I learn how to use databases (updated 5/21/2021)</p>
+    <p>Coming next: Advantages and Flaws related to predator types (updated 5/25/2021)</p>
     <h2>Disclaimers:</h2>
     <h3>Basic Disclaimer:</h3>
     <p>I am not affiliated with White Wolf/Paradox. This is merely a fan project to practice coding and hopefully provide something of value to the VtM V5 community.</p>
@@ -26,6 +26,10 @@
     <form>
         <label for='char-name'>Name or Label:</label>
         <input type='text' placeholder='Character' id='char-name'>
+        <div>
+            <label for='humanity'>Humanity:</label>
+            <span id='humanity'></span>
+        </div>
         <div>
             <span>Skills Distribution:</span>
             <label for='sp'>Specialist:</label>
@@ -88,6 +92,31 @@
             <input type='radio' name='clan' value='ventrue' id='ventrue'>
             <label for='random'>Random: <span id='random-clan'></span></label>
             <input type='radio' name='clan' value='random' id='random'>
+        </div>
+        <div>
+            <span>Predator Type:</span>
+            <label for='alleycat'>Alleycat:</label>
+            <input type='radio' name='pred-type' value='alleycat' id='alleycat'>
+            <label for='bagger'>Bagger:</label>
+            <input type='radio' name='pred-type' value='bagger' id='bagger'>
+            <label for='blood-leech'>Blood Leech:</label>
+            <input type='radio' name='pred-type' value='blood-leech' id='blood-leech'>
+            <label for='cleaver'>Cleaver:</label>
+            <input type='radio' name='pred-type' value='cleaver' id='cleaver'>
+            <label for='consensualist'>Consensualist:</label>
+            <input type='radio' name='pred-type' value='consensualist' id='consensualist'>
+            <label for='farmer'>Farmer:</label>
+            <input type='radio' name='pred-type' value='farmer' id='farmer'>
+            <label for='osiris'>Osiris:</label>
+            <input type='radio' name='pred-type' value='osiris' id='osiris'>
+            <label for='sandman'>Sandman:</label>
+            <input type='radio' name='pred-type' value='sandman' id='sandman'>
+            <label for='scene-queen'>Scene Queen:</label>
+            <input type='radio' name='pred-type' value='scene-queen' id='scene-queen'>
+            <label for='siren'>Siren:</label>
+            <input type='radio' name='pred-type' value='siren' id='siren'>
+            <label for='random-pred-type-option'>Random:<span id='shows-pred-type'></span></label>
+            <input type='radio' name='pred-type' value='random' id='random-pred-type-option'>
         </div>
     </form>
     <h3>Attributes:</h3>
@@ -237,6 +266,7 @@
     <div id="saved-sheets"></div>
     <h2>Update Log:</h2>
     <div id="updates">
+        <p>5/25/2021: I lied like a dog: added basic predator types, including humanity/blood potency adjustments, disciplines, and skills/specialties.</p>
         <p>5/21/2021: Added generation and updated the Character class (including logic regarding rules for thin-bloods and generation/Blood Potency). Also updated capitalization in the DOM.</p>
     </div>
     <script src="domselectionandconsts.js"></script>
