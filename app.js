@@ -255,17 +255,55 @@ function createCharacter(attributes){
     if(isRandomPred){
         randomPred.innerText = `(picked ${charPred})`;
     }
-    //Adjusts specialties for various predator types, makes sure to choose either specialty or one dot in a skill, and 
-    //fills in nonexistent specialties.
-    const possibleSpecialties = predSpecialties[charPred];
-    const specialtyChoice = randomChoice(Object.keys(possibleSpecialties));
+    //Adjusts specialties for various predator types, making  sure to choose either a specialty or one dot in a skill.
+    const possiblePredSpecialties = predSpecialties[charPred];
+    const specialtyChoice = randomChoice(Object.keys(possiblePredSpecialties));
     let specialties = {};
     if(skillBlock[specialtyChoice] === 0){
         skillBlock[specialtyChoice]++
     }
     else{
-        specialties[specialtyChoice] = possibleSpecialties[specialtyChoice];
+        specialties[specialtyChoice] = [];
+        specialties[specialtyChoice].push(possiblePredSpecialties[specialtyChoice]);
     }
+
+    //Adjusts free specialties to Academics, Craft, Science, and Performance.
+    if(skillBlock['Academics'] !== 0){
+        specialties['Academics'] = [];
+        specialties['Academics'].push(randomChoice(specialtiesToSkills['Academics']))
+    }
+    if(skillBlock['Craft' !== 0]){
+        specialties['Craft'] = [];
+        specialties['Craft'].push(randomChoice(specialtiesToSkills['Craft']));
+    }
+    if(skillBlock['Science'] !== 0){
+        specialties['Science'] = [];
+        specialties['Science'].push(randomChoice(specialtiesToSkills['Science']));
+    }
+    if(skillBlock['Performance'] !== 0 && specialties['Performance'] === undefined){
+        specialties['Performance'] = [];
+        specialties['Performance'].push(randomChoice(specialtiesToSkills['Performance']));
+    }
+    else if(skillBlock['Performance'] !== 0){
+        specialties['Performance'].push(randomChoice(specialtiesToSkills['Performance']));
+    }
+
+    //Adds a career specialty.
+    careerSkill = randomChoice(Object.keys(specialtiesToSkills));
+    if(skillBlock[careerSkill] === 0 || (specialties[careerSkill] !== undefined && specialties[careerSkill].length >= skillBlock[careerSkill])){
+        while(skillBlock[careerSkill === 0] || (specialties[careerSkill] !== undefined && specialties[careerSkill].length >= skillBlock[careerSkill])){
+            careerSkill = randomChoice(Object.keys(specialtiesToSkills));
+        }
+    }
+    else{
+        careerSpecialty = randomChoice(specialtiesToSkills[careerSkill]);
+        if(specialties[careerSkill] === undefined){
+            specialties[careerSkill] = [];
+        }
+        specialties[careerSkill].push(careerSpecialty);
+    }    
+   
+    //Fills in nonexistent specialties.
     for(skill of skills){
         if(Object.keys(specialties).includes(skill)){
             continue;
