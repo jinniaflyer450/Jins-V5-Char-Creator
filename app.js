@@ -71,6 +71,62 @@ function distributeRestDisciplines(disBlock){
     }
 }
 
+
+//A function that assists in divvying up dots in advantages or flaws for predator types.
+function chooseAdvantagesOrFlaws(optionsMenu, finalReceptacle){
+    if(optionsMenu !== ''){
+        let tally = Object.entries(optionsMenu)[0][1].length - 1;
+        let nonSingleEntries = {};
+        let choiceCount = {};
+        let randomOption = null;
+        let individualDotValue = null;
+        for([advantage, dotValue] of Object.entries(optionsMenu)){
+            if(dotValue.length === 1){
+                finalReceptacle[advantage] = dotValue[0];
+            }
+            else{
+                nonSingleEntries[advantage] = dotValue;
+            }
+        }
+        if(Object.keys(nonSingleEntries).length !== 0){
+            while(tally >= 0){
+                randomOption = randomChoice(Object.keys(nonSingleEntries));
+                individualDotValue = randomChoice(nonSingleEntries[randomOption]);
+                if(tally === 0){
+                    break;
+                }
+                else if(tally - individualDotValue < 0){
+                    while(tally - individualDotValue < 0){
+                        individualDotValue = randomChoice(optionsMenu[randomOption]);
+                    }
+                }
+                if(Object.keys(choiceCount).includes(randomOption)){
+                    choiceCount[randomOption]++
+                }
+                else{
+                    choiceCount[randomOption] = 1;
+                }
+                if(['Fame', 'Herd', 'Resources'].includes(randomOption) && Object.keys(finalReceptacle).includes(randomOption)){
+                    finalReceptacle[randomOption] += individualDotValue;
+                    tally = tally - individualDotValue;
+                }
+                else if(['Fame', 'Herd', 'Resources'].includes(randomOption) && individualDotValue !== 0){
+                    finalReceptacle[randomOption] = individualDotValue;
+                    tally = tally - individualDotValue;
+                }
+                else if(individualDotValue === 0){
+                    choiceCount[randomOption]--;
+                    continue;
+                }
+                else{
+                    finalReceptacle[`${randomOption} ${choiceCount[randomOption]}`] = individualDotValue;
+                    tally = tally - individualDotValue;
+                }
+            }
+        }
+    }       
+}
+
 //The function that resets the generator after each use so that it may be used again.
 function resetGenerator(){
     character = null;
@@ -295,13 +351,11 @@ function createCharacter(attributes){
             careerSkill = randomChoice(Object.keys(specialtiesToSkills));
         }
     }
-    else{
-        careerSpecialty = randomChoice(specialtiesToSkills[careerSkill]);
-        if(specialties[careerSkill] === undefined){
-            specialties[careerSkill] = [];
-        }
-        specialties[careerSkill].push(careerSpecialty);
-    }    
+    careerSpecialty = randomChoice(specialtiesToSkills[careerSkill]);
+    if(specialties[careerSkill] === undefined){
+        specialties[careerSkill] = [];
+    }
+    specialties[careerSkill].push(careerSpecialty);    
    
     //Fills in nonexistent specialties.
     for(skill of skills){
@@ -312,13 +366,24 @@ function createCharacter(attributes){
             specialties[skill] = '';
         }
     }
+
+    //Selects the correct groups of predator type advantages and flaws and sets advantages and flaws to empty objects.    
+    let charPredAdvantagesMenu = predAdvantages[charPred];
+    let charPredFlawsMenu = predFlaws[charPred];
+    advantages = {};
+    flaws = {};
+
     /*Stores data to a single character object.*/
-    let character = new Character(charClan, charGen, attrBlock, skillBlock, disBlock, charPred, specialties, charName);
+    let character = new Character(charClan, charGen, attrBlock, skillBlock, disBlock, charPred, specialties, advantages, flaws, charName);
     /*Selects properties of the character object to shorten DOM selection later.*/
     const charAttr = character.attributes;
     const charSkills = character.skills;
     const charDis = character.disciplines;
     const charSpec = character.specialties;
+    const charAdv = character.advantages;
+    const charFlaws = character.flaws;
+
+    //Increases the discipline selected for predator type by 1 if character is not a thin-blood.
     if(character.clan !== 'thin-blood'){
         charDis[charPredDiscipline]++;
     }
@@ -344,6 +409,10 @@ function createCharacter(attributes){
     if(character.generation === 'fourteenthEtc'){
         character.bloodPotency = 0;
     }
+
+    //Adds advantages and flaws for predator type.
+    chooseAdvantagesOrFlaws(charPredAdvantagesMenu, charAdv);
+    chooseAdvantagesOrFlaws(charPredFlawsMenu, charFlaws);
 
     //Updates the DOM to reflect humanity, attribute, skill, specialty, and discipline values.
     humDom.innerText = character.humanity;
@@ -409,6 +478,17 @@ document.querySelector('#create-character').addEventListener('click', function(e
     character = createCharacter(attributes);
 })
 
+//A function that fills in a descriptive paragraph.
+function fillDescription(details, paragraph){
+    for(let [key, value] of Object.entries(details)){
+        if(value !== 0){
+            paragraph.innerText += `${key} ${value} `
+        }
+        else{
+            continue;
+        }
+    }
+}
 
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys Was reminded of how to name pairs here.
 /*The function that creates a div containing all relevant information for the character for later use and appends it to the DOM.*/
@@ -419,6 +499,8 @@ function saveStats(){
     const savedStatsAttr = document.createElement('p');
     const savedStatsSkills = document.createElement('p');
     const savedStatsDisciplines = document.createElement('p');
+    const savedStatsAdv = document.createElement('p');
+    const savedStatsFlaw = document.createElement('p');
     savedStatsName.innerText = `${character.name}: `
     if(character.generation === 'fourteenthEtc'){
         savedStatsBasicInfo.innerText = `Thin-Blood (Fourteenth, Fifteenth, or Sixteenth Generation; Blood Potency 0)`
@@ -435,34 +517,26 @@ function saveStats(){
     else{
         savedStatsDisciplines.innerText = `Disciplines: `
     }
-    for(let [key, value] of Object.entries(character.attributes)){
-        savedStatsAttr.innerText += `${key} ${value} `
-    }
-    for(let [key, value] of Object.entries(character.skills)){
-        if(value !== 0){
-            savedStatsSkills.innerText += `${key} ${value} ${character.specialties[key]} `
-        }
-        else{
-            continue;
-        }
-    }
-    for(let [key, value] of Object.entries(character.disciplines)){
-        if(value !== 0){
-            savedStatsDisciplines.innerText += `${key} ${value} `
-        }
-        else{
-            continue;
-        }
-    }
+    fillDescription(character.attributes, savedStatsAttr);
+    fillDescription(character.skills, savedStatsSkills);
+    fillDescription(character.disciplines, savedStatsDisciplines);
+    savedStatsAdv.innerText = 'Advantages: '
+    fillDescription(character.advantages, savedStatsAdv);
+    savedStatsFlaw.innerText += 'Flaws: '
+    fillDescription(character.flaws, savedStatsFlaw);
     savedStatsSkills.innerText.length--;
     savedStatsAttr.innerText.length--;
     savedStatsDisciplines.innerText.length--;
+    savedStatsAdv.innerText.length--;
+    savedStatsFlaw.innerText.length--;
     savedStats.classList.add('saved-stats');
     savedStats.append(savedStatsName);
     savedStats.append(savedStatsBasicInfo);
     savedStats.append(savedStatsAttr);
     savedStats.append(savedStatsSkills);
     savedStats.append(savedStatsDisciplines);
+    savedStats.append(savedStatsAdv);
+    savedStats.append(savedStatsFlaw);
     document.querySelector('#saved-sheets').append(savedStats);
 }
 
