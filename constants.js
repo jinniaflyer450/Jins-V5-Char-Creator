@@ -115,3 +115,7 @@ let predFlaws = {
     'Farmer': {'Feeding Flaw: Vegan': 2}, 'Osiris': {'Enemies': [0, 1, 2], 'Mythic': [0, 1, 2]}, 'Sandman': '',
     'Scene-Queen': {'Influence Flaw: Disliked': [0, 1], 'Prey Exclusion: outside [your scene]': [0, 1]}, 'Siren': {'Enemy': [1]}
 }
+
+//A single object containing general advantages.
+
+//A single object containing general flaws.

@@ -347,7 +347,7 @@ function createCharacter(attributes){
     //Adds a career specialty.
     careerSkill = randomChoice(Object.keys(specialtiesToSkills));
     if(skillBlock[careerSkill] === 0 || (specialties[careerSkill] !== undefined && specialties[careerSkill].length >= skillBlock[careerSkill])){
-        while(skillBlock[careerSkill === 0] || (specialties[careerSkill] !== undefined && specialties[careerSkill].length >= skillBlock[careerSkill])){
+        while(skillBlock[careerSkill] === 0 || (specialties[careerSkill] !== undefined && specialties[careerSkill].length >= skillBlock[careerSkill])){
             careerSkill = randomChoice(Object.keys(specialtiesToSkills));
         }
     }
