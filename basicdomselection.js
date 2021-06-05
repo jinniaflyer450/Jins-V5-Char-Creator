@@ -58,16 +58,10 @@ let protDom = document.querySelector('#protean');
 let blooDom = document.querySelector('#blood-sorcery');
 let thinAlchDom = document.querySelector('#thin-blood-alchemy');
 
-//The radio buttons in the DOM that allow for selection of generation.
-let tenthDom = document.querySelector('#tenth');
-let eleventhDom = document.querySelector('#eleventh');
-let twelfthDom = document.querySelector('#twelfth');
-let thirteenthDom = document.querySelector('#thirteenth');
-let fourteenthEtcDom = document.querySelector('#fourteenthEtc');
-let randomGenSelect = document.querySelector('#random-gen');
-
 //The areas where randomly picked clans and skill dot distributions are shown (if the user randomized them) after the app runs.
 let randomClan = document.querySelector('#random-clan');
 let randomDist = document.querySelector('#random-dist');
 let randomGen = document.querySelector('#shows-random-gen');
+
+//The place in the DOM that shows random predator type.
 let randomPred = document.querySelector('#shows-pred-type');

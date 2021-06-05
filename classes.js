@@ -14,3 +14,19 @@ class Character{
         this.disciplines = disBlock;
     }
 }
+
+class BBEG{
+    constructor(clan, generation, attrBlock, skillBlock, disBlock, specialties, advantages, flaws, name='BBEG', humanity=7, bloodPotency=1){
+        this.name=name;
+        this.clan=clan;
+        this.generation=generation;
+        this.bloodPotency=bloodPotency;
+        this.specialties=specialties;
+        this.advantages=advantages;
+        this.flaws=flaws;
+        this.humanity=humanity;
+        this.attributes=attrBlock;
+        this.skills=skillBlock;
+        this.disciplines=disBlock;
+    }
+}
